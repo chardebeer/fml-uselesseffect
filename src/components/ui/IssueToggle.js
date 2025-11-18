@@ -23,7 +23,7 @@ export default function IssueToggle({ label, description, active, onChange, acce
         position: "relative",
         overflow: "hidden",
         boxShadow: active
-          ? "0 0 20px rgba(137,180,250,0.3)"
+          ? "0 0 10px rgba(137,180,250,0.15)"
           : "0 0 0 rgba(0,0,0,0)",
         transition:
           "border-color 200ms ease, box-shadow 200ms ease, background 200ms ease",
@@ -33,9 +33,9 @@ export default function IssueToggle({ label, description, active, onChange, acce
         style={{
           position: "absolute",
           inset: 0,
-          opacity: active ? 0.45 : 0.1,
+          opacity: active ? 0.25 : 0.05,
           backgroundImage:
-            "radial-gradient(circle at -10% 0%, rgba(148,226,213,0.4), transparent 60%), radial-gradient(circle at 120% 120%, rgba(245,194,231,0.4), transparent 50%)",
+            "radial-gradient(circle at -10% 0%, rgba(148,226,213,0.2), transparent 60%), radial-gradient(circle at 120% 120%, rgba(245,194,231,0.2), transparent 50%)",
           pointerEvents: "none",
         }}
       />
@@ -60,7 +60,7 @@ export default function IssueToggle({ label, description, active, onChange, acce
             height: 10,
             borderRadius: 999,
             background: active ? accent : "#6c7086",
-            boxShadow: active ? `0 0 12px ${accent}` : "none",
+            boxShadow: active ? `0 0 6px ${accent}` : "none",
           }}
         />
       </div>

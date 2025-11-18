@@ -184,7 +184,7 @@ useEffect(() => {
               style={{
                 aspectRatio: "1 / 1",
                 borderRadius: 4,
-                background: on ? "#a6e3a1" : "#181825",
+                background: on ? "#a6e3a1" : "#24273a",
                 opacity: on ? 0.95 : 0.25,
               }}
             />
@@ -198,7 +198,7 @@ useEffect(() => {
           marginTop: 8,
           padding: 8,
           borderRadius: 8,
-          background: "#1e1e2e",
+          background: "#24273a",
           border: "1px solid #313244",
           fontSize: 10,
           fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import GlobalStyles from "../components/GlobalStyles";
 import BackgroundOrbs from "../components/BackgroundOrbs";
 import IssueToggle from "../components/ui/IssueToggle";
 import CpuSpinnerLoop from "../components/demos/CpuSpinnerLoop";
@@ -38,13 +37,12 @@ export default function Page() {
         padding: 24,
         fontFamily: "system-ui, sans-serif",
         background:
-          "radial-gradient(circle at top, #1e1e2e 0%, #1e1e2e 40%, #11111b 75%, #1e1e2e 100%)",
+          "radial-gradient(circle at top, #24273a 0%, #1e1e2e 40%, #181825 75%, #1e1e2e 100%)",
         color: "#cdd6f4",
         position: "relative",
         overflowX: "hidden",
       }}
     >
-      <GlobalStyles />
       <BackgroundOrbs />
 
       <div
@@ -52,8 +50,8 @@ export default function Page() {
           position: "absolute",
           inset: 0,
           backgroundImage:
-            "radial-gradient(circle at 10% 0, rgba(148,226,213,0.2), transparent 55%), radial-gradient(circle at 90% 100%, rgba(203,166,247,0.25), transparent 50%)",
-          opacity: 0.7,
+            "radial-gradient(circle at 10% 0, rgba(148,226,213,0.1), transparent 55%), radial-gradient(circle at 90% 100%, rgba(203,166,247,0.12), transparent 50%)",
+          opacity: 0.5,
           mixBlendMode: "screen",
           pointerEvents: "none",
           zIndex: 0,
@@ -70,7 +68,7 @@ export default function Page() {
       >
         <header style={{ marginBottom: 18 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
-            <span style={{ fontSize: 32, filter: "drop-shadow(0 0 8px rgba(203,166,247,0.5))" }}>💻</span>
+            <span style={{ fontSize: 32, filter: "drop-shadow(0 0 4px rgba(203,166,247,0.3))" }}>💻</span>
             <h1
               style={{
                 marginTop: 0,
@@ -84,7 +82,7 @@ export default function Page() {
             >
               this is what happens when you use useEffect like a fucking moron
             </h1>
-            <span style={{ fontSize: 32, filter: "drop-shadow(0 0 8px rgba(243,139,168,0.5))" }}>🔥</span>
+            <span style={{ fontSize: 32, filter: "drop-shadow(0 0 4px rgba(243,139,168,0.3))" }}>🔥</span>
           </div>
           {hasChaos && (
             <div
@@ -123,18 +121,18 @@ export default function Page() {
               padding: 10,
               borderRadius: 14,
               background: hasChaos
-                  ? "linear-gradient(90deg, rgba(243,139,168,0.18), rgba(30,30,46,0.9))"
-                  : "linear-gradient(90deg, rgba(166,227,161,0.22), rgba(30,30,46,0.9))",
+                  ? "linear-gradient(90deg, rgba(243,139,168,0.1), rgba(30,30,46,0.7))"
+                  : "linear-gradient(90deg, rgba(166,227,161,0.12), rgba(30,30,46,0.7))",
               border: hasChaos
-                  ? "1px solid rgba(243,139,168,0.8)"
-                  : "1px solid rgba(166,227,161,0.8)",
+                  ? "1px solid rgba(243,139,168,0.5)"
+                  : "1px solid rgba(166,227,161,0.5)",
               display: "flex",
               alignItems: "center",
               gap: 10,
               flexWrap: "wrap",
               boxShadow: hasChaos
-                  ? "0 0 26px rgba(243,139,168,0.55)"
-                  : "0 0 20px rgba(166,227,161,0.4)",
+                  ? "0 0 12px rgba(243,139,168,0.25)"
+                  : "0 0 10px rgba(166,227,161,0.2)",
             }}
           >
             <span
@@ -173,14 +171,14 @@ export default function Page() {
               marginBottom: 14,
               padding: 12,
               borderRadius: 16,
-              background: "rgba(24,24,37,0.95)",
-              border: "1px solid rgba(108,112,134,0.35)",
+              background: "rgba(36,39,58,0.7)",
+              border: "1px solid rgba(108,112,134,0.3)",
               display: "flex",
               alignItems: "center",
               gap: 12,
               fontSize: 12,
               flexWrap: "wrap",
-              boxShadow: "0 0 40px rgba(15,23,42,0.9)",
+              boxShadow: "0 0 15px rgba(15,23,42,0.4)",
             }}
           >
             <span style={{ opacity: 0.9, whiteSpace: "nowrap", flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}>
@@ -263,8 +261,8 @@ export default function Page() {
                   background: chaos === 0 ? "#a6e3a1" : "#f38ba8",
                   boxShadow:
                     chaos === 0
-                      ? "0 0 12px rgba(166,227,161,0.8)"
-                      : "0 0 16px rgba(243,139,168,0.9)",
+                      ? "0 0 6px rgba(166,227,161,0.4)"
+                      : "0 0 8px rgba(243,139,168,0.4)",
                 }}
               />
               global noise: {globalNoiseLog.length} entries

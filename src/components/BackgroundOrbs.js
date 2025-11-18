@@ -23,8 +23,8 @@ export default function BackgroundOrbs() {
             height: orb.size,
             borderRadius: 999,
             background:
-              "radial-gradient(circle, rgba(148,226,213,0.16), transparent 70%)",
-            filter: "blur(4px)",
+              "radial-gradient(circle, rgba(148,226,213,0.08), transparent 70%)",
+            filter: "blur(6px)",
             animation: "floatNoise 9s ease-in-out infinite",
             animationDelay: `${orb.delay}s`,
           }}

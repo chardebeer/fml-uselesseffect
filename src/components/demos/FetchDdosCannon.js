@@ -115,7 +115,7 @@ useEffect(() => {
           border: "1px solid #1f2937",
           overflow: "hidden",
           position: "relative",
-          background: "#020617",
+          background: "#1e1e2e",
         }}
       >
         <div

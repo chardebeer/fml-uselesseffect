@@ -522,7 +522,7 @@ export default function ConspiracySection() {
               border: "4px solid #dc2626",
               borderStyle: "double",
               textAlign: "center",
-              boxShadow: "0 0 50px rgba(220,38,38,0.8)",
+              boxShadow: "0 0 20px rgba(220,38,38,0.4)",
             }}
           >
             <p

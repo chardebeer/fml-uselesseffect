@@ -5,7 +5,7 @@ export default function IRLBox({ children }) {
         marginTop: 8,
         padding: 8,
         borderRadius: 8,
-        background: "rgba(24,24,37,0.95)",
+        background: "rgba(36,39,58,0.6)",
         border: "1px dashed #45475a",
         fontSize: 10,
         color: "#cdd6f4",

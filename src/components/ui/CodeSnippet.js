@@ -33,7 +33,7 @@ export default function CodeSnippet({ code, active, accent, label }) {
               borderRadius: 999,
               background: active ? chipColor : "#4b5563",
               boxShadow: active
-                ? `0 0 12px ${chipColor}`
+                ? `0 0 6px ${chipColor}`
                 : "0 0 0 rgba(0,0,0,0)",
               animation: active ? "glowPulse 2s ease-in-out infinite" : "none",
             }}
@@ -46,14 +46,14 @@ export default function CodeSnippet({ code, active, accent, label }) {
           marginTop: 8,
           padding: 10,
           borderRadius: 10,
-          background: "rgba(24,24,37,0.98)",
+          background: "rgba(36,39,58,0.8)",
           color: "#cdd6f4",
           fontSize: 10,
           overflowX: "auto",
           lineHeight: 1.5,
           border: `1px solid ${active ? chipColor : "#313244"}`,
           boxShadow: active
-            ? "0 0 16px rgba(137,180,250,0.3)"
+            ? "0 0 8px rgba(137,180,250,0.15)"
             : "0 0 0 rgba(0,0,0,0)",
           transition:
             "border-color 200ms ease, box-shadow 200ms ease",

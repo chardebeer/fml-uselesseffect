@@ -10,10 +10,10 @@ export default function Panel({ title, subtitle, children, accent, glitch }) {
         borderRadius: 22,
         padding: 18,
         background:
-          "radial-gradient(circle at top, #1e1e2e 0%, #1e1e2e 35%, #1e1e2e 45%, #11111b 100%)",
+          "radial-gradient(circle at top, #24273a 0%, #1e1e2e 35%, #1e1e2e 45%, #181825 100%)",
         border: `1px solid ${accent || "#6c7086"}`,
         boxShadow:
-          "0 0 50px rgba(15,23,42,0.9), inset 0 0 0 1px rgba(15,23,42,0.8)",
+          "0 0 20px rgba(15,23,42,0.4), inset 0 0 0 1px rgba(15,23,42,0.3)",
         position: "relative",
         overflow: "hidden",
         animation: "panelBreath 7s ease-in-out infinite",
@@ -26,9 +26,9 @@ export default function Panel({ title, subtitle, children, accent, glitch }) {
           position: "absolute",
           inset: -1,
           backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(15,23,42,0.32) 0, rgba(15,23,42,0.32) 1px, rgba(3,7,18,1) 1px, rgba(3,7,18,1) 3px)",
+            "repeating-linear-gradient(0deg, rgba(15,23,42,0.15) 0, rgba(15,23,42,0.15) 1px, rgba(3,7,18,0.8) 1px, rgba(3,7,18,0.8) 3px)",
           mixBlendMode: "soft-light",
-          opacity: 0.7,
+          opacity: 0.4,
           pointerEvents: "none",
           animation: "scanline 3s linear infinite",
         }}
@@ -38,9 +38,9 @@ export default function Panel({ title, subtitle, children, accent, glitch }) {
           position: "absolute",
           inset: 0,
           background:
-            "radial-gradient(circle at 20% -10%, rgba(148,226,213,0.18), transparent 55%), radial-gradient(circle at 110% 40%, rgba(243,139,168,0.12), transparent 50%)",
+            "radial-gradient(circle at 20% -10%, rgba(148,226,213,0.08), transparent 55%), radial-gradient(circle at 110% 40%, rgba(243,139,168,0.06), transparent 50%)",
           mixBlendMode: "screen",
-          opacity: 0.9,
+          opacity: 0.6,
           pointerEvents: "none",
         }}
       />
@@ -60,7 +60,7 @@ export default function Panel({ title, subtitle, children, accent, glitch }) {
               borderRadius: 999,
               background:
                 "radial-gradient(circle at 30% 20%, #fab387, #1e1e2e)",
-              boxShadow: "0 0 16px rgba(250,179,135,0.8)",
+              boxShadow: "0 0 8px rgba(250,179,135,0.4)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
