@@ -259,9 +259,9 @@ function CodeSnippet({ code, active, accent, label }) {
               borderRadius: 999,
               background: active ? chipColor : "#4b5563",
               boxShadow: active
-                ? `0 0 16px ${chipColor}`
+                ? `0 0 12px ${chipColor}`
                 : "0 0 0 rgba(0,0,0,0)",
-              animation: active ? "glowPulse 1.2s ease-in-out infinite" : "none",
+              animation: active ? "glowPulse 2s ease-in-out infinite" : "none",
             }}
           />
           {active ? "running issue" : "idle example"}
@@ -279,11 +279,10 @@ function CodeSnippet({ code, active, accent, label }) {
           lineHeight: 1.5,
           border: `1px solid ${active ? chipColor : "#1f2937"}`,
           boxShadow: active
-            ? "0 0 24px rgba(96,165,250,0.45)"
+            ? "0 0 16px rgba(96,165,250,0.3)"
             : "0 0 0 rgba(0,0,0,0)",
-          transform: active ? "translateY(-1px)" : "translateY(0)",
           transition:
-            "border-color 120ms linear, box-shadow 120ms linear, transform 120ms linear",
+            "border-color 200ms ease, box-shadow 200ms ease",
         }}
       >
         <code>{code}</code>
@@ -357,11 +356,10 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
         position: "relative",
         overflow: "hidden",
         boxShadow: active
-          ? "0 0 26px rgba(59,130,246,0.45)"
+          ? "0 0 20px rgba(59,130,246,0.3)"
           : "0 0 0 rgba(0,0,0,0)",
-        transform: active ? "translateY(-1px)" : "translateY(0)",
         transition:
-          "border-color 120ms linear, box-shadow 120ms linear, transform 120ms linear, background 160ms linear",
+          "border-color 200ms ease, box-shadow 200ms ease, background 200ms ease",
       }}
     >
       <div
@@ -1238,7 +1236,7 @@ function WidgetCell({ id, refreshMs, onTick, onPanic, enabled }) {
   useEffect(() => {
     if (!enabled) return;
 
-    const intervalId = setInterval(() => {
+    const tick = () => {
       setHits(h => {
         const next = h + 1;
         onTick();
@@ -1247,14 +1245,23 @@ function WidgetCell({ id, refreshMs, onTick, onPanic, enabled }) {
         }
         return next;
       });
-    }, refreshMs);
+    };
 
-    // every run leaves another footprint
+    // Start interval
+    const intervalId = setInterval(tick, refreshMs);
+
+    // every run leaves another footprint - this array only grows
+    // Even though cleanup clears the interval, we keep pushing to this array
     globalPhantomRefs.push({ id, intervalId, timestamp: Date.now() });
 
     return () => {
       clearInterval(intervalId);
     };
+    // BUG: hits in deps means effect recreates every time hits changes
+    // This causes the interval to be cleared and recreated constantly
+    // The cleanup runs, then the effect runs again immediately
+    // This is wrong - hits should NOT be in the dependency array
+    // But it still works because intervals fire, update hits, effect recreates, new interval starts
   }, [id, refreshMs, onTick, onPanic, enabled, hits]);
 
   const t = Math.min(1, hits / 40);
@@ -1578,7 +1585,7 @@ export default function Page() {
                 background: "rgba(0,0,0,0.35)",
               }}
             >
-              {hasChaos ? "you broke it, you monster" : "safe mode - nothing broken yet"}
+              {hasChaos ? "the amount of time this actually runs for depends on how much RAM you can afford - you did this to yourself" : "nothing broken yet"}
             </span>
 
             {!hasChaos && (
@@ -1589,7 +1596,7 @@ export default function Page() {
 
             {hasChaos && (
               <span style={{ fontSize: 12, opacity: 0.95 }}>
-                You turned something on. Now your app is broken, your CPU is screaming, and it&apos;s 100% your fault. Congratulations.
+                You flipped a switch. Now your app is broken and your CPU is crying. This is what you wanted, right?
               </span>
             )}
           </div>
@@ -1798,241 +1805,399 @@ export default function Page() {
           Fix these. Rewrite them properly. Stop using useEffect for everything. Your CPU will thank you. Your users will thank you. Your oncall will thank you. Just fucking fix them.
         </p>
 
-        {/* CONSPIRACY SECTION */}
-        <div
+
+{/* CONSPIRACY SECTION */}
+<div
+  style={{
+    marginTop: 60,
+    padding: 24,
+    borderRadius: 16,
+    background:
+      "linear-gradient(135deg, rgba(127,29,29,0.95) 0%, rgba(69,10,10,0.98) 50%, rgba(127,29,29,0.95) 100%)",
+    border: "3px solid #ef4444",
+    boxShadow:
+      "0 0 40px rgba(239,68,68,0.6), inset 0 0 20px rgba(0,0,0,0.5)",
+    position: "relative",
+    overflow: "hidden",
+  }}
+>
+  {/* Red scanlines overlay */}
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      backgroundImage:
+        "repeating-linear-gradient(0deg, rgba(239,68,68,0.1) 0, rgba(239,68,68,0.1) 1px, transparent 1px, transparent 2px)",
+      pointerEvents: "none",
+      animation: "scanline 2s linear infinite",
+    }}
+  />
+
+  <div style={{ position: "relative", zIndex: 1 }}>
+    <div
+      style={{
+        textAlign: "center",
+        marginBottom: 20,
+        padding: "12px 0",
+        borderTop: "2px solid #ef4444",
+        borderBottom: "2px solid #ef4444",
+      }}
+    >
+      <h2
+        style={{
+          margin: 0,
+          fontSize: 28,
+          fontWeight: 900,
+          color: "#fef2f2",
+          textTransform: "uppercase",
+          letterSpacing: 3,
+          textShadow:
+            "0 0 20px rgba(239,68,68,0.8), 0 0 40px rgba(239,68,68,0.6), 2px 2px 0 #7f1d1d",
+          animation: "flicker 1s infinite",
+        }}
+      >
+        ⚠️ WAKE UP DEVELOPERS ⚠️
+      </h2>
+    </div>
+
+    <div
+      style={{
+        fontSize: 14,
+        lineHeight: 1.8,
+        color: "#fef2f2",
+      }}
+    >
+      <p
+        style={{
+          margin: "16px 0",
+          fontSize: 18,
+          fontWeight: 700,
+          color: "#fca5a5",
+          textTransform: "uppercase",
+          textAlign: "center",
+        }}
+      >
+        THEY DON&apos;T WANT YOU TO KNOW THIS
+      </p>
+
+      <p style={{ margin: "12px 0", fontSize: 15 }}>
+        <strong style={{ color: "#fca5a5", fontSize: 16 }}>
+          React doesn&apos;t want you to know the truth about useEffect.
+        </strong>{" "}
+        The &quot;documentation&quot; is a LIE. The &quot;best practices&quot; are
+        PROPAGANDA. Every time you use useEffect, you&apos;re playing into their
+        hands.
+      </p>
+
+      <p style={{ margin: "12px 0", fontSize: 15 }}>
+        <strong style={{ color: "#fca5a5", fontSize: 16 }}>
+          Big Tech is hiding the REAL way to write React code.
+        </strong>{" "}
+        They want you dependent on useEffect. They want your apps to be slow.
+        They want your CPU to burn. WHY? Because slow apps = more server costs =
+        more money for Big Cloud.
+      </p>
+
+      {/* EXTRA DERANGED LORE */}
+      <p style={{ margin: "12px 0", fontSize: 15 }}>
+        <strong style={{ color: "#fecaca" }}>
+          The React DevTools are not tools. They are surveillance.
+        </strong>{" "}
+        Every prop you inspect is recorded in a secret analytics dashboard
+        where a product manager whispers &quot;conversion funnel&quot; while
+        your component tree screams silently.
+      </p>
+
+      <p style={{ margin: "12px 0", fontSize: 15 }}>
+        The Virtual DOM is not &quot;virtual&quot;. It is a parallel universe
+        where every rerender creates a duplicate of your app that lives in
+        eternal suspense. That is why they called it{" "}
+        <code>Suspense</code>. They think you will not notice.
+      </p>
+
+      <div
+        style={{
+          margin: "20px 0",
+          padding: 16,
+          background: "rgba(0,0,0,0.4)",
+          border: "2px dashed #ef4444",
+          borderRadius: 8,
+        }}
+      >
+        <p
           style={{
-            marginTop: 60,
-            padding: 24,
-            borderRadius: 16,
-            background:
-              "linear-gradient(135deg, rgba(127,29,29,0.95) 0%, rgba(69,10,10,0.98) 50%, rgba(127,29,29,0.95) 100%)",
-            border: "3px solid #ef4444",
-            boxShadow:
-              "0 0 40px rgba(239,68,68,0.6), inset 0 0 20px rgba(0,0,0,0.5)",
-            position: "relative",
-            overflow: "hidden",
+            margin: 0,
+            fontSize: 16,
+            fontWeight: 700,
+            color: "#fef2f2",
+            textAlign: "center",
+            textTransform: "uppercase",
           }}
         >
-          {/* Red scanlines overlay */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundImage:
-                "repeating-linear-gradient(0deg, rgba(239,68,68,0.1) 0, rgba(239,68,68,0.1) 1px, transparent 1px, transparent 2px)",
-              pointerEvents: "none",
-              animation: "scanline 2s linear infinite",
-            }}
-          />
-          
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <div
-              style={{
-                textAlign: "center",
-                marginBottom: 20,
-                padding: "12px 0",
-                borderTop: "2px solid #ef4444",
-                borderBottom: "2px solid #ef4444",
-              }}
-            >
-              <h2
-                style={{
-                  margin: 0,
-                  fontSize: 28,
-                  fontWeight: 900,
-                  color: "#fef2f2",
-                  textTransform: "uppercase",
-                  letterSpacing: 3,
-                  textShadow:
-                    "0 0 20px rgba(239,68,68,0.8), 0 0 40px rgba(239,68,68,0.6), 2px 2px 0 #7f1d1d",
-                  animation: "flicker 1s infinite",
-                }}
-              >
-                ⚠️ WAKE UP DEVELOPERS ⚠️
-              </h2>
-            </div>
+          THE TRUTH THEY DON&apos;T WANT YOU TO KNOW:
+        </p>
+        <ul
+          style={{
+            margin: "12px 0 0 0",
+            paddingLeft: 24,
+            fontSize: 14,
+          }}
+        >
+          <li style={{ margin: "8px 0" }}>
+            useEffect was designed to FAIL. It&apos;s a trap. Every dependency
+            array is a ticking time bomb.
+          </li>
+          <li style={{ margin: "8px 0" }}>
+            The React team KNOWS about infinite loops. They&apos;re not bugs,
+            they&apos;re FEATURES. They want your app to crash.
+          </li>
+          <li style={{ margin: "8px 0" }}>
+            Memory leaks aren&apos;t accidents. They&apos;re INTENTIONAL. Big
+            Browser wants you to buy more RAM.
+          </li>
+          <li style={{ margin: "8px 0" }}>
+            The &quot;Rules of Hooks&quot; are a distraction. The REAL rules are
+            hidden in the source code. They don&apos;t want you to read it.
+          </li>
+          <li style={{ margin: "8px 0" }}>
+            Every useEffect you write makes Mark Zuckerberg stronger. This is not
+            a joke. This is REAL.
+          </li>
+          {/* NEW UNHINGED BULLETS */}
+          <li style={{ margin: "8px 0" }}>
+            Each stale closure you create powers a secret data center deep
+            underground where abandoned side projects are stored in jars.
+          </li>
+          <li style={{ margin: "8px 0" }}>
+            When you forget a cleanup function, a React fiber wakes up at 3 a.m.
+            and whispers &quot;reconciliation&quot; directly into your RAM.
+          </li>
+          <li style={{ margin: "8px 0" }}>
+            The dependency array is not an array. It is a summoning circle. Put
+            the wrong value in it and you summon an infinite rerender loop that
+            feeds on your will to debug.
+          </li>
+          <li style={{ margin: "8px 0" }}>
+            <code>useLayoutEffect</code> is just useEffect wearing combat boots.
+            It runs earlier so it can trip your layout before it walks.
+          </li>
+          <li style={{ margin: "8px 0" }}>
+            Every time you type <code>[]</code> as a dependency array, a senior
+            engineer nods from a hidden review meeting and stamps &quot;EASY TO
+            BLAME&quot; on your Jira ticket.
+          </li>
+        </ul>
+      </div>
 
-            <div
-              style={{
-                fontSize: 14,
-                lineHeight: 1.8,
-                color: "#fef2f2",
-              }}
-            >
-              <p
-                style={{
-                  margin: "16px 0",
-                  fontSize: 18,
-                  fontWeight: 700,
-                  color: "#fca5a5",
-                  textTransform: "uppercase",
-                  textAlign: "center",
-                }}
-              >
-                THEY DON&apos;T WANT YOU TO KNOW THIS
-              </p>
+      {/* LEAKED INCIDENT REPORTS */}
+      <div
+        style={{
+          margin: "20px 0",
+          padding: 16,
+          background: "rgba(0,0,0,0.6)",
+          borderRadius: 8,
+          border: "1px solid rgba(248,113,113,0.7)",
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            fontSize: 15,
+            fontWeight: 800,
+            textTransform: "uppercase",
+            textAlign: "center",
+            color: "#fecaca",
+          }}
+        >
+          LEAKED REACT INCIDENT REPORTS
+        </p>
+        <ul
+          style={{
+            margin: "12px 0 0 0",
+            paddingLeft: 24,
+            fontSize: 13,
+          }}
+        >
+          <li style={{ margin: "6px 0" }}>
+            2016: Developer forgets dependency in useEffect. App works in
+            development, explodes in production, is quietly labeled
+            &quot;edge case&quot; and buried.
+          </li>
+          <li style={{ margin: "6px 0" }}>
+            2019: Team migrates to hooks. Standup duration doubles. Nobody
+            questions why the only topic is &quot;why is this running twice&quot;.
+          </li>
+          <li style={{ margin: "6px 0" }}>
+            2022: A junior dev adds <code>someFunction</code> to the dependency
+            array. The function is recreated every render. The app enters a
+            loop so powerful it begins to heat the office.
+          </li>
+          <li style={{ margin: "6px 0" }}>
+            2024: Architect removes all side effects, ships purely functional
+            code. Recruiter marks them as &quot;not collaborative&quot; and
+            recommends more useEffect.
+          </li>
+        </ul>
+      </div>
 
-              <p style={{ margin: "12px 0", fontSize: 15 }}>
-                <strong style={{ color: "#fca5a5", fontSize: 16 }}>
-                  React doesn&apos;t want you to know the truth about useEffect.
-                </strong>{" "}
-                The &quot;documentation&quot; is a LIE. The &quot;best practices&quot; are
-                PROPAGANDA. Every time you use useEffect, you&apos;re playing into their
-                hands.
-              </p>
+      <p
+        style={{
+          margin: "20px 0",
+          padding: 12,
+          background: "rgba(239,68,68,0.2)",
+          border: "2px solid #ef4444",
+          borderRadius: 8,
+          fontSize: 15,
+          fontWeight: 600,
+          textAlign: "center",
+          color: "#fef2f2",
+        }}
+      >
+        ⚠️ THEY&apos;RE WATCHING YOU RIGHT NOW ⚠️
+        <br />
+        <span style={{ fontSize: 12, opacity: 0.9 }}>
+          Every useEffect you write is logged. Every infinite loop is tracked.
+          Every memory leak is monitored. WAKE UP.
+        </span>
+      </p>
 
-              <p style={{ margin: "12px 0", fontSize: 15 }}>
-                <strong style={{ color: "#fca5a5", fontSize: 16 }}>
-                  Big Tech is hiding the REAL way to write React code.
-                </strong>{" "}
-                They want you dependent on useEffect. They want your apps to be slow.
-                They want your CPU to burn. WHY? Because slow apps = more server costs =
-                more money for Big Cloud.
-              </p>
+      {/* MIND CONTROL FLOWCHART */}
+      <div
+        style={{
+          margin: "20px 0",
+          padding: 16,
+          background: "rgba(0,0,0,0.5)",
+          borderRadius: 8,
+          border: "2px dotted rgba(248,113,113,0.7)",
+          fontSize: 13,
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            fontWeight: 800,
+            textAlign: "center",
+            textTransform: "uppercase",
+            color: "#fecaca",
+          }}
+        >
+          HOW THEY CONTROL YOUR COMPONENTS
+        </p>
+        <ol style={{ margin: "12px 0 0 20px" }}>
+          <li style={{ margin: "6px 0" }}>
+            You add a quick useEffect &quot;just to fetch data&quot;.
+          </li>
+          <li style={{ margin: "6px 0" }}>
+            The effect runs on every render because of a single unstable
+            reference that nobody reviews.
+          </li>
+          <li style={{ margin: "6px 0" }}>
+            Performance tanks. They tell you to buy a bigger machine instead of
+            reading the code.
+          </li>
+          <li style={{ margin: "6px 0" }}>
+            You learn to fear refactors and worship the dependency array like a
+            cursed relic.
+          </li>
+        </ol>
+      </div>
 
-              <div
-                style={{
-                  margin: "20px 0",
-                  padding: 16,
-                  background: "rgba(0,0,0,0.4)",
-                  border: "2px dashed #ef4444",
-                  borderRadius: 8,
-                }}
-              >
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: 16,
-                    fontWeight: 700,
-                    color: "#fef2f2",
-                    textAlign: "center",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  THE TRUTH THEY DON&apos;T WANT YOU TO KNOW:
-                </p>
-                <ul
-                  style={{
-                    margin: "12px 0 0 0",
-                    paddingLeft: 24,
-                    fontSize: 14,
-                  }}
-                >
-                  <li style={{ margin: "8px 0" }}>
-                    useEffect was designed to FAIL. It&apos;s a trap. Every dependency
-                    array is a ticking time bomb.
-                  </li>
-                  <li style={{ margin: "8px 0" }}>
-                    The React team KNOWS about infinite loops. They&apos;re not bugs,
-                    they&apos;re FEATURES. They want your app to crash.
-                  </li>
-                  <li style={{ margin: "8px 0" }}>
-                    Memory leaks aren&apos;t accidents. They&apos;re INTENTIONAL. Big
-                    Browser wants you to buy more RAM.
-                  </li>
-                  <li style={{ margin: "8px 0" }}>
-                    The &quot;Rules of Hooks&quot; are a distraction. The REAL rules are
-                    hidden in the source code. They don&apos;t want you to read it.
-                  </li>
-                  <li style={{ margin: "8px 0" }}>
-                    Every useEffect you write makes Mark Zuckerberg stronger. This is not
-                    a joke. This is REAL.
-                  </li>
-                </ul>
-              </div>
+      <div
+        style={{
+          margin: "20px 0",
+          padding: 16,
+          background:
+            "linear-gradient(90deg, rgba(239,68,68,0.3), rgba(127,29,29,0.3))",
+          border: "3px solid #ef4444",
+          borderRadius: 8,
+          textAlign: "center",
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            fontSize: 18,
+            fontWeight: 900,
+            color: "#fef2f2",
+            textTransform: "uppercase",
+            letterSpacing: 2,
+            textShadow: "0 0 15px rgba(239,68,68,0.8)",
+          }}
+        >
+          THE SOLUTION THEY DON&apos;T WANT YOU TO KNOW:
+        </p>
+        <p
+          style={{
+            margin: "12px 0 0 0",
+            fontSize: 16,
+            fontWeight: 700,
+            color: "#fca5a5",
+          }}
+        >
+          STOP USING useEffect. USE YOUR BRAIN INSTEAD.
+        </p>
+        <p style={{ margin: "8px 0 0 0", fontSize: 13, opacity: 0.9 }}>
+          They want you dependent. They want you weak. They want you to reach for
+          useEffect like a crutch. BREAK FREE. THINK FOR YOURSELF. WRITE BETTER
+          CODE.
+        </p>
+        <p
+          style={{
+            margin: "10px 0 0 0",
+            fontSize: 12,
+            opacity: 0.85,
+          }}
+        >
+          Learn event flow. Understand rendering. Tame state. Every line of code
+          you truly understand removes one invisible dependency from your mind.
+        </p>
+      </div>
 
-              <p
-                style={{
-                  margin: "20px 0",
-                  padding: 12,
-                  background: "rgba(239,68,68,0.2)",
-                  border: "2px solid #ef4444",
-                  borderRadius: 8,
-                  fontSize: 15,
-                  fontWeight: 600,
-                  textAlign: "center",
-                  color: "#fef2f2",
-                }}
-              >
-                ⚠️ THEY&apos;RE WATCHING YOU RIGHT NOW ⚠️
-                <br />
-                <span style={{ fontSize: 12, opacity: 0.9 }}>
-                  Every useEffect you write is logged. Every infinite loop is tracked.
-                  Every memory leak is monitored. WAKE UP.
-                </span>
-              </p>
+      {/* FINAL CURSED WARNINGS */}
+      <p
+        style={{
+          margin: "16px 0 0 0",
+          fontSize: 12,
+          textAlign: "center",
+          opacity: 0.7,
+          fontStyle: "italic",
+        }}
+      >
+        Share this page with 10 developers or your next useEffect will create an
+        infinite loop. This is not a threat. This is a FACT.
+      </p>
+      <p
+        style={{
+          margin: "8px 0 0 0",
+          fontSize: 11,
+          textAlign: "center",
+          opacity: 0.6,
+          fontStyle: "italic",
+        }}
+      >
+        If you ignore this message, your linter will mysteriously stop working
+        and your tests will begin to pass for reasons you do not understand.
+      </p>
 
-              <div
-                style={{
-                  margin: "20px 0",
-                  padding: 16,
-                  background: "linear-gradient(90deg, rgba(239,68,68,0.3), rgba(127,29,29,0.3))",
-                  border: "3px solid #ef4444",
-                  borderRadius: 8,
-                  textAlign: "center",
-                }}
-              >
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: 18,
-                    fontWeight: 900,
-                    color: "#fef2f2",
-                    textTransform: "uppercase",
-                    letterSpacing: 2,
-                    textShadow: "0 0 15px rgba(239,68,68,0.8)",
-                  }}
-                >
-                  THE SOLUTION THEY DON&apos;T WANT YOU TO KNOW:
-                </p>
-                <p
-                  style={{
-                    margin: "12px 0 0 0",
-                    fontSize: 16,
-                    fontWeight: 700,
-                    color: "#fca5a5",
-                  }}
-                >
-                  STOP USING useEffect. USE YOUR BRAIN INSTEAD.
-                </p>
-                <p style={{ margin: "8px 0 0 0", fontSize: 13, opacity: 0.9 }}>
-                  They want you dependent. They want you weak. They want you to reach for
-                  useEffect like a crutch. BREAK FREE. THINK FOR YOURSELF. WRITE BETTER
-                  CODE.
-                </p>
-              </div>
+      <div
+        style={{
+          marginTop: 20,
+          padding: 8,
+          textAlign: "center",
+          fontSize: 10,
+          opacity: 0.6,
+          borderTop: "1px solid rgba(239,68,68,0.3)",
+        }}
+      >
+        <p style={{ margin: 0 }}>
+          🔴 LIVE: {new Date().toLocaleString()} | DEVELOPERS AWAKENED:{" "}
+          {Math.floor(Math.random() * 10000) + 1000} | STATUS: THEY KNOW
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
-              <p
-                style={{
-                  margin: "24px 0 0 0",
-                  fontSize: 12,
-                  textAlign: "center",
-                  opacity: 0.7,
-                  fontStyle: "italic",
-                }}
-              >
-                Share this page with 10 developers or your next useEffect will create an
-                infinite loop. This is not a threat. This is a FACT.
-              </p>
-
-              <div
-                style={{
-                  marginTop: 20,
-                  padding: 8,
-                  textAlign: "center",
-                  fontSize: 10,
-                  opacity: 0.6,
-                  borderTop: "1px solid rgba(239,68,68,0.3)",
-                }}
-              >
-                <p style={{ margin: 0 }}>
-                  🔴 LIVE: {new Date().toLocaleString()} | DEVELOPERS AWAKENED:{" "}
-                  {Math.floor(Math.random() * 10000) + 1000} | STATUS: THEY KNOW
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </main>
   );
