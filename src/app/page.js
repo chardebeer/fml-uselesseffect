@@ -7,6 +7,8 @@ const globalNoiseLog = [];
 const globalGhostListeners = [];
 const globalPhantomRefs = [];
 
+// ------- global CSS for cursed vibes -------
+
 function GlobalStyles() {
   return (
     <style
@@ -18,29 +20,90 @@ function GlobalStyles() {
             100% { box-shadow: 0 0 0 rgba(148, 163, 184, 0.0); }
           }
           @keyframes corruptionShimmer {
-            0% { transform: translateX(-10%); }
-            50% { transform: translateX(10%); }
-            100% { transform: translateX(-10%); }
+            0% { transform: translateX(-15%); }
+            50% { transform: translateX(15%); }
+            100% { transform: translateX(-15%); }
           }
           @keyframes scanline {
             0% { background-position-y: 0; }
             100% { background-position-y: 8px; }
           }
           @keyframes floatNoise {
-            0% { transform: translate3d(0,0,0) scale(1); opacity: 0.1; }
-            50% { transform: translate3d(4px,-8px,0) scale(1.2); opacity: 0.45; }
-            100% { transform: translate3d(-2px,4px,0) scale(1); opacity: 0.2; }
+            0% { transform: translate3d(0,0,0) scale(1); opacity: 0.08; }
+            50% { transform: translate3d(6px,-10px,0) scale(1.25); opacity: 0.45; }
+            100% { transform: translate3d(-4px,6px,0) scale(1); opacity: 0.18; }
           }
           @keyframes panelBreath {
             0% { transform: translateY(0); }
             50% { transform: translateY(-2px); }
             100% { transform: translateY(0); }
           }
+          @keyframes headerGlitch {
+            0% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
+            20% { text-shadow: 1px 0 rgba(59,130,246,0.9), -1px 0 rgba(236,72,153,0.7); }
+            21% { text-shadow: -1px 0 rgba(59,130,246,0.9), 1px 0 rgba(236,72,153,0.7); }
+            22% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
+            60% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
+            61% { text-shadow: 2px -1px rgba(34,197,94,0.9), -2px 1px rgba(239,68,68,0.8); }
+            62% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
+            100% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
+          }
         `,
       }}
     />
   );
 }
+
+// ------- deterministic "random" orbs so hydration stops yelling -------
+
+function prng(seed) {
+  const x = Math.sin(seed * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+const ORBS = Array.from({ length: 18 }).map((_, i) => {
+  const left = prng(i) * 100;
+  const top = prng(i + 101) * 100;
+  const size = 60 + prng(i + 202) * 80;
+  const delay = prng(i + 303) * 6;
+  return { key: i, left, top, size, delay };
+});
+
+function BackgroundOrbs() {
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        position: "fixed",
+        inset: 0,
+        overflow: "hidden",
+        pointerEvents: "none",
+        zIndex: 0,
+      }}
+    >
+      {ORBS.map(orb => (
+        <div
+          key={orb.key}
+          style={{
+            position: "absolute",
+            left: `${orb.left}%`,
+            top: `${orb.top}%`,
+            width: orb.size,
+            height: orb.size,
+            borderRadius: 999,
+            background:
+              "radial-gradient(circle, rgba(56,189,248,0.16), transparent 70%)",
+            filter: "blur(4px)",
+            animation: "floatNoise 9s ease-in-out infinite",
+            animationDelay: `${orb.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ------- shared UI bits -------
 
 function Panel({ title, subtitle, children, accent }) {
   return (
@@ -58,7 +121,7 @@ function Panel({ title, subtitle, children, accent }) {
         animation: "panelBreath 7s ease-in-out infinite",
       }}
     >
-      {/* subtle CRT wash */}
+      {/* CRT wash */}
       <div
         style={{
           position: "absolute",
@@ -249,7 +312,7 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
       type="button"
       onClick={() => onChange(!active)}
       style={{
-        flex: "1 1 200px",
+        flex: "1 1 220px",
         textAlign: "left",
         padding: 10,
         borderRadius: 14,
@@ -338,7 +401,7 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
             marginTop: 2,
             fontSize: 11,
             opacity: 0.78,
-            maxWidth: 220,
+            maxWidth: 260,
           }}
         >
           {description}
@@ -348,7 +411,11 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
   );
 }
 
-/* 1. BRAIN STATIC LOOP */
+// ------- cursed panels -------
+
+/* 1. BRAIN STATIC LOOP
+   This effect is a love letter to spinning fans and a hate crime against schedulers.
+*/
 function BrainStaticLoop({ enabled }) {
   const [brain, setBrain] = useState(0);
   const [phase, setPhase] = useState(3);
@@ -356,6 +423,7 @@ function BrainStaticLoop({ enabled }) {
   useEffect(() => {
     if (!enabled) return;
 
+    // Tiny interval that never dies
     const intervalId = setInterval(() => {
       setBrain(v => {
         const next = (v + phase) % 9999;
@@ -384,8 +452,8 @@ function BrainStaticLoop({ enabled }) {
     requestAnimationFrame(rafLoop);
 
     return () => {
+      // fake cleanup to keep the lie alive
       console.log("BrainStaticLoop pretending to clean", intervalId);
-      // intentionally not clearing intervalId
     };
   }, [enabled, brain, phase, Math.random()]);
 
@@ -418,7 +486,7 @@ useEffect(() => {
   return (
     <Panel
       title="Brain Static Loop"
-      subtitle="The effect that turns your CPU into a white noise generator."
+      subtitle="Dear useEffect, why are you allowed to schedule both an interval and a RAF in the same breath."
       accent="#f97316"
     >
       <div
@@ -440,7 +508,7 @@ useEffect(() => {
           brain noise: {brain}
         </div>
         <MetricPill
-          label="heat"
+          label="thermal regret"
           value={`${Math.round(heat * 100)}%`}
           tone={heat > 0.75 ? "hot" : heat > 0.4 ? "warm" : "cool"}
         />
@@ -513,10 +581,11 @@ useEffect(() => {
           constantly.
         </li>
         <li>
-          <code>Math.random()</code> in deps makes sure nothing ever stabilises.
+          <code>Math.random()</code> in deps keeps React on a treadmill of sadness.
         </li>
         <li>
-          Interval is never cleared, RAF is endless, welcome to fan noise city.
+          Interval is never cleared, RAF is endless, your laptop learns to sound
+          like a small jet.
         </li>
       </ul>
 
@@ -524,13 +593,15 @@ useEffect(() => {
         code={code}
         active={enabled}
         accent="#f97316"
-        label="show the looping pattern"
+        label="show the brain damage"
       />
     </Panel>
   );
 }
 
-/* 2. FEEDBACK CHAIN RECURSOR */
+/* 2. FEEDBACK CHAIN RECURSOR
+   Two effects writing to each other, just like that one team that only talks in incidents.
+*/
 function FeedbackChainRecursor({ enabled }) {
   const [head, setHead] = useState(0);
   const [tail, setTail] = useState(0);
@@ -571,7 +642,7 @@ useEffect(() => {
   return (
     <Panel
       title="Feedback Chain Recursor"
-      subtitle="Two innocent effects accidentally reimplement a feedback oscillator."
+      subtitle="Dear useEffect, maybe state that depends on state that depends on state was a warning sign."
       accent="#22c55e"
     >
       <div
@@ -624,15 +695,15 @@ useEffect(() => {
       </div>
 
       <p style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
-        This is what happens when two components try to fix each other by setting
-        each other's state in effects.
+        This is what happens when two effects try to fix each other instead of
+        admitting they should not exist.
       </p>
       <ul style={{ marginTop: 4, fontSize: 11, color: "#9ca3af" }}>
         <li>Effect 1 listens to head and writes tail.</li>
         <li>Effect 2 listens to tail and writes head.</li>
         <li>
-          Real life result: infinite re render chain, confused developer, sad
-          profiler.
+          Result: infinite render loop, profiler crying in a corner, you blaming
+          React instead of the mirror.
         </li>
       </ul>
 
@@ -640,13 +711,15 @@ useEffect(() => {
         code={code}
         active={enabled}
         accent="#22c55e"
-        label="show the feedback trap"
+        label="show the mutual dependence"
       />
     </Panel>
   );
 }
 
-/* 3. PHANTOM LISTENER MESH */
+/* 3. PHANTOM LISTENER MESH
+   Mousemove listeners as a lifestyle choice.
+*/
 function PhantomListenerMesh({ enabled }) {
   const [moves, setMoves] = useState(0);
 
@@ -700,7 +773,7 @@ function PhantomListenerMesh({ enabled }) {
   return (
     <Panel
       title="Phantom Listener Mesh"
-      subtitle="Mousemove listeners breed with each render until the DOM is haunted."
+      subtitle="Dear useEffect, why is it legal to add listeners like this in 2025."
       accent="#3b82f6"
     >
       <div
@@ -770,13 +843,14 @@ function PhantomListenerMesh({ enabled }) {
           }}
         >
           move the cursor and imagine each ghost listener as a future bug report
+          that says useEffect is broken.
         </div>
       </div>
 
       <ul style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
-        <li>Effect runs a lot since it depends on moves.</li>
+        <li>Effect runs all the time because it depends on moves.</li>
         <li>Each run adds a new mousemove listener.</li>
-        <li>Cleanup does nothing because the function reference changed.</li>
+        <li>Cleanup does nothing, which is a surprising metaphor for your tests.</li>
       </ul>
 
       <CodeSnippet
@@ -789,7 +863,9 @@ function PhantomListenerMesh({ enabled }) {
   );
 }
 
-/* 4. FETCH DDOS CANNON */
+/* 4. FETCH DDOS CANNON
+   If your staging keeps falling over, this panel is why.
+*/
 function FetchDdosCannon({ enabled }) {
   const [requests, setRequests] = useState(0);
   const [responses, setResponses] = useState(0);
@@ -797,7 +873,7 @@ function FetchDdosCannon({ enabled }) {
 
   useEffect(() => {
     if (!enabled) return;
-    if (responses > 120) return;
+    if (responses > 120) return; // mercy cap, barely
 
     setRequests(r => r + 1);
 
@@ -837,7 +913,7 @@ useEffect(() => {
   return (
     <Panel
       title="Fetch DDOS Cannon"
-      subtitle="Every response schedules another request because who needs rate limits."
+      subtitle="Dear useEffect, of course you keep scheduling more network traffic, why would you not."
       accent="#ef4444"
     >
       <div
@@ -914,9 +990,9 @@ useEffect(() => {
       </div>
 
       <p style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
-        Open the Network tab and watch the firehose. This is why you put the
-        thing that causes requests in a different effect than the thing that
-        counts responses.
+        Network tab is your crime scene now. This effect is exactly the pattern
+        that convinces people React is secretly a distributed denial of service
+        library.
       </p>
 
       <CodeSnippet
@@ -929,7 +1005,9 @@ useEffect(() => {
   );
 }
 
-/* 5. PHANTOM GRID ENGINE */
+/* 5. PHANTOM GRID ENGINE
+   Children that ping the parent with setState because why not.
+*/
 function PhantomCell({ id, onEcho }) {
   const [charge, setCharge] = useState(0);
 
@@ -1008,7 +1086,7 @@ function PhantomCell({ id, onEcho }) {
   return (
     <Panel
       title="Phantom Grid Engine"
-      subtitle="A grid of little components whispering setState to the parent."
+      subtitle="Dear useEffect, thanks for teaching us that children can resize their own parent component."
       accent="#a855f7"
     >
       <div
@@ -1079,11 +1157,11 @@ function PhantomCell({ id, onEcho }) {
       </div>
 
       <ul style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
-        <li>Every cell has an interval and a useEffect.</li>
-        <li>Each cell leaks a reference into a global array.</li>
+        <li>Every cell has an interval and a useEffect, because of course it does.</li>
+        <li>Each cell leaks a reference into a global array like a tiny memory crime.</li>
         <li>
-          Some cells trigger parent state updates on a rhythm, growing the grid
-          further.
+          Some cells whisper setState to the parent so the grid keeps growing out
+          of sheer spite.
         </li>
       </ul>
 
@@ -1097,47 +1175,7 @@ function PhantomCell({ id, onEcho }) {
   );
 }
 
-function BackgroundOrbs() {
-  const orbs = Array.from({ length: 18 }).map((_, i) => ({
-    key: i,
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-    size: 60 + Math.random() * 80,
-    delay: Math.random() * 6,
-  }));
-
-  return (
-    <div
-      aria-hidden="true"
-      style={{
-        position: "fixed",
-        inset: 0,
-        overflow: "hidden",
-        pointerEvents: "none",
-        zIndex: 0,
-      }}
-    >
-      {orbs.map(orb => (
-        <div
-          key={orb.key}
-          style={{
-            position: "absolute",
-            left: `${orb.left}%`,
-            top: `${orb.top}%`,
-            width: orb.size,
-            height: orb.size,
-            borderRadius: 999,
-            background:
-              "radial-gradient(circle, rgba(56,189,248,0.16), transparent 70%)",
-            filter: "blur(4px)",
-            animation: "floatNoise 9s ease-in-out infinite",
-            animationDelay: `${orb.delay}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+// ------- main page -------
 
 export default function Page() {
   const [brainOn, setBrainOn] = useState(false);
@@ -1152,6 +1190,8 @@ export default function Page() {
     (meshOn ? 2 : 0) +
     (ddosOn ? 3 : 0) +
     (gridOn ? 2 : 0);
+
+  const hasChaos = chaos > 0;
 
   const chaosTone =
     chaos === 0 ? "cool" : chaos <= 4 ? "cool" : chaos <= 8 ? "warm" : "hot";
@@ -1197,29 +1237,85 @@ export default function Page() {
           <h1
             style={{
               marginTop: 0,
-              marginBottom: 6,
-              letterSpacing: 0.12,
-              fontSize: 24,
+              marginBottom: 4,
+              letterSpacing: 0.15,
+              fontSize: 25,
+              textTransform: "lowercase",
+              animation: "headerGlitch 6s infinite",
             }}
           >
-            useEffect radio noise lab
+            dear useEffect, we need to talk
           </h1>
           <p
             style={{
               maxWidth: 760,
               fontSize: 13,
               color: "#9ca3af",
-              marginBottom: 12,
+              marginBottom: 10,
             }}
           >
-            Every panel is a tiny haunted room built out of bad effects. Flip
-            switches, open the console and Network tab, and watch things get
-            progressively less stable.
+            This lab is not a tutorial. It is a collection of side effect crimes.
+            Every panel is something we once shipped, looked at in the profiler,
+            and blamed on React instead of our own choices.
           </p>
 
+          {/* default state clarity banner */}
           <div
             style={{
               marginTop: 8,
+              marginBottom: 12,
+              padding: 10,
+              borderRadius: 14,
+              background: hasChaos
+                ? "linear-gradient(90deg, rgba(248,113,113,0.18), rgba(30,64,175,0.9))"
+                : "linear-gradient(90deg, rgba(22,163,74,0.22), rgba(15,23,42,0.9))",
+              border: hasChaos
+                ? "1px solid rgba(248,113,113,0.8)"
+                : "1px solid rgba(34,197,94,0.8)",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              flexWrap: "wrap",
+              boxShadow: hasChaos
+                ? "0 0 26px rgba(248,113,113,0.55)"
+                : "0 0 20px rgba(34,197,94,0.4)",
+            }}
+          >
+            <span
+              style={{
+                padding: "2px 8px",
+                borderRadius: 999,
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: 0.1,
+                border: "1px solid rgba(15,23,42,0.4)",
+                background: "rgba(0,0,0,0.35)",
+              }}
+            >
+              {hasChaos ? "self inflicted chaos" : "default state - safe mode"}
+            </span>
+
+            {!hasChaos && (
+              <span style={{ fontSize: 12, opacity: 0.9 }}>
+                All switches are off. No leaking intervals. No haunted listeners.
+                No network storms. This is the last moment where the app respects
+                your hardware.
+              </span>
+            )}
+
+            {hasChaos && (
+              <span style={{ fontSize: 12, opacity: 0.95 }}>
+                You chose to turn something on. Every error in the console from
+                this point forward is a love letter from useEffect addressed
+                directly to you.
+              </span>
+            )}
+          </div>
+
+          {/* corruption meter */}
+          <div
+            style={{
+              marginTop: 4,
               marginBottom: 14,
               padding: 12,
               borderRadius: 16,
@@ -1273,10 +1369,10 @@ export default function Page() {
               />
             </div>
             <span style={{ opacity: 0.9 }}>
-              {chaos === 0 && "idle signal"}
-              {chaos > 0 && chaos <= 4 && "low background hiss"}
-              {chaos > 4 && chaos <= 8 && "noticeable screaming"}
-              {chaos > 8 && "full spectral meltdown"}
+              {chaos === 0 && "no effects are currently running"}
+              {chaos > 0 && chaos <= 4 && "background hiss - ignorable until it is not"}
+              {chaos > 4 && chaos <= 8 && "noticeable screaming - profiler recommended"}
+              {chaos > 8 && "full spectral meltdown - please open Task Manager"}
             </span>
             <span
               style={{
@@ -1303,6 +1399,37 @@ export default function Page() {
               global noise: {globalNoiseLog.length} entries
             </span>
           </div>
+
+          {/* tiny hydration note - pointed at useEffect habits, not React */}
+          <div
+            style={{
+              fontSize: 10,
+              color: "#9ca3af",
+              opacity: 0.9,
+              display: "flex",
+              gap: 6,
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <span
+              style={{
+                padding: "1px 6px",
+                borderRadius: 999,
+                border: "1px solid rgba(148,163,184,0.6)",
+                textTransform: "uppercase",
+                letterSpacing: 0.1,
+              }}
+            >
+              hydration gossip
+            </span>
+            <span>
+              The background orbs used to call <code>Math.random()</code> in
+              render and React complained. Now they use a deterministic pseudo
+              random function. The problem was never React. It was us and our
+              affection for side effects.
+            </span>
+          </div>
         </header>
 
         <section
@@ -1316,7 +1443,7 @@ export default function Page() {
         >
           <IssueToggle
             label="Brain Static Loop"
-            description="interval + RAF + random deps, aka free room heater"
+            description="interval plus RAF plus random deps - a spa day for your fans"
             active={brainOn}
             onChange={setBrainOn}
             accent="#f97316"
@@ -1340,7 +1467,7 @@ export default function Page() {
           />
           <IssueToggle
             label="Fetch DDOS Cannon"
-            description="let staging pretend to be a load test"
+            description="staging server as a personality test"
             active={ddosOn}
             onChange={setDdosOn}
             accent="#ef4444"
@@ -1348,7 +1475,7 @@ export default function Page() {
           />
           <IssueToggle
             label="Phantom Grid Engine"
-            description="children whisper setState to the parent forever"
+            description="children whispering setState to their parent forever"
             active={gridOn}
             onChange={setGridOn}
             accent="#a855f7"
@@ -1367,6 +1494,7 @@ export default function Page() {
           {loopOn && <FeedbackChainRecursor enabled={loopOn} />}
           {meshOn && <PhantomListenerMesh enabled={meshOn} />}
           {ddosOn && <FetchDdosCannon enabled={ddosOn} />}
+          {/* grid panel always renders, but can be asleep */}
           <PhantomGridEngine enabled={gridOn} />
         </section>
 
@@ -1374,12 +1502,13 @@ export default function Page() {
           style={{
             marginTop: 24,
             fontSize: 11,
-            opacity: 0.6,
+            opacity: 0.7,
             color: "#9ca3af",
           }}
         >
-          Workshop mode idea: let people stare at the panels, then make them write
-          the sane version of each effect. Same visuals, zero self inflicted pain.
+          The real workshop exercise: keep the visuals, delete every useEffect,
+          rewrite all of this with sane data flow, and see how much quieter your
+          laptop becomes. Then send an apology letter to your profiler.
         </p>
       </div>
     </main>
