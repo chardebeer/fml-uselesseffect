@@ -15,9 +15,9 @@ function GlobalStyles() {
       dangerouslySetInnerHTML={{
         __html: `
           @keyframes glowPulse {
-            0% { box-shadow: 0 0 0 rgba(148, 163, 184, 0.0); }
-            50% { box-shadow: 0 0 30px rgba(94, 234, 212, 0.45); }
-            100% { box-shadow: 0 0 0 rgba(148, 163, 184, 0.0); }
+            0% { box-shadow: 0 0 0 rgba(180, 190, 254, 0.0); }
+            50% { box-shadow: 0 0 30px rgba(148, 226, 213, 0.45); }
+            100% { box-shadow: 0 0 0 rgba(180, 190, 254, 0.0); }
           }
           @keyframes corruptionShimmer {
             0% { transform: translateX(-15%); }
@@ -39,14 +39,14 @@ function GlobalStyles() {
             100% { transform: translateY(0); }
           }
           @keyframes headerGlitch {
-            0% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
-            20% { text-shadow: 1px 0 rgba(59,130,246,0.9), -1px 0 rgba(236,72,153,0.7); }
-            21% { text-shadow: -1px 0 rgba(59,130,246,0.9), 1px 0 rgba(236,72,153,0.7); }
-            22% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
-            60% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
-            61% { text-shadow: 2px -1px rgba(34,197,94,0.9), -2px 1px rgba(239,68,68,0.8); }
-            62% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
-            100% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
+            0% { text-shadow: 0 0 0 rgba(137, 180, 250, 0.0); }
+            20% { text-shadow: 1px 0 rgba(116, 199, 236, 0.9), -1px 0 rgba(245, 194, 231, 0.7); }
+            21% { text-shadow: -1px 0 rgba(116, 199, 236, 0.9), 1px 0 rgba(245, 194, 231, 0.7); }
+            22% { text-shadow: 0 0 0 rgba(137, 180, 250, 0.0); }
+            60% { text-shadow: 0 0 0 rgba(137, 180, 250, 0.0); }
+            61% { text-shadow: 2px -1px rgba(166, 227, 161, 0.9), -2px 1px rgba(243, 139, 168, 0.8); }
+            62% { text-shadow: 0 0 0 rgba(137, 180, 250, 0.0); }
+            100% { text-shadow: 0 0 0 rgba(137, 180, 250, 0.0); }
           }
           @keyframes textCorruption {
             0% { transform: translateX(0) skew(0deg); opacity: 1; }
@@ -115,7 +115,7 @@ function BackgroundOrbs() {
             height: orb.size,
             borderRadius: 999,
             background:
-              "radial-gradient(circle, rgba(56,189,248,0.16), transparent 70%)",
+              "radial-gradient(circle, rgba(148,226,213,0.16), transparent 70%)",
             filter: "blur(4px)",
             animation: "floatNoise 9s ease-in-out infinite",
             animationDelay: `${orb.delay}s`,
@@ -140,8 +140,8 @@ function Panel({ title, subtitle, children, accent, glitch }) {
         borderRadius: 22,
         padding: 18,
         background:
-          "radial-gradient(circle at top, #020617 0%, #020617 35%, #020617 45%, #000000 100%)",
-        border: `1px solid ${accent || "#4b5563"}`,
+          "radial-gradient(circle at top, #1e1e2e 0%, #1e1e2e 35%, #1e1e2e 45%, #11111b 100%)",
+        border: `1px solid ${accent || "#6c7086"}`,
         boxShadow:
           "0 0 50px rgba(15,23,42,0.9), inset 0 0 0 1px rgba(15,23,42,0.8)",
         position: "relative",
@@ -168,7 +168,7 @@ function Panel({ title, subtitle, children, accent, glitch }) {
           position: "absolute",
           inset: 0,
           background:
-            "radial-gradient(circle at 20% -10%, rgba(56,189,248,0.18), transparent 55%), radial-gradient(circle at 110% 40%, rgba(239,68,68,0.12), transparent 50%)",
+            "radial-gradient(circle at 20% -10%, rgba(148,226,213,0.18), transparent 55%), radial-gradient(circle at 110% 40%, rgba(243,139,168,0.12), transparent 50%)",
           mixBlendMode: "screen",
           opacity: 0.9,
           pointerEvents: "none",
@@ -189,18 +189,26 @@ function Panel({ title, subtitle, children, accent, glitch }) {
               height: 18,
               borderRadius: 999,
               background:
-                "radial-gradient(circle at 30% 20%, #f97316, #0f172a)",
-              boxShadow: "0 0 16px rgba(249,115,22,0.8)",
+                "radial-gradient(circle at 30% 20%, #fab387, #1e1e2e)",
+              boxShadow: "0 0 16px rgba(250,179,135,0.8)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 10,
             }}
-          />
+          >
+            ⚡
+          </div>
           <div>
             <h2
               style={{
                 margin: 0,
-                color: "#e5e7eb",
+                color: "#cdd6f4",
                 fontSize: 17,
                 letterSpacing: 0.04,
                 animation: glitch ? "textCorruption 3s ease-in-out infinite" : "none",
+                display: "flex",
+                alignItems: "center",
               }}
             >
               {title}
@@ -211,7 +219,7 @@ function Panel({ title, subtitle, children, accent, glitch }) {
                 marginBottom: 0,
                 opacity: 0.85,
                 fontSize: 12,
-                color: "#9ca3af",
+                color: "#bac2de",
               }}
             >
               {subtitle}
@@ -225,14 +233,14 @@ function Panel({ title, subtitle, children, accent, glitch }) {
 }
 
 function CodeSnippet({ code, active, accent, label }) {
-  const chipColor = accent || "#22c55e";
+  const chipColor = accent || "#a6e3a1";
   return (
     <details style={{ marginTop: 10 }}>
       <summary
         style={{
           cursor: "pointer",
           fontSize: 12,
-          color: "#e5e7eb",
+          color: "#cdd6f4",
           display: "flex",
           alignItems: "center",
           gap: 8,
@@ -272,14 +280,14 @@ function CodeSnippet({ code, active, accent, label }) {
           marginTop: 8,
           padding: 10,
           borderRadius: 10,
-          background: "rgba(3,7,18,0.98)",
-          color: "#f9fafb",
+          background: "rgba(24,24,37,0.98)",
+          color: "#cdd6f4",
           fontSize: 10,
           overflowX: "auto",
           lineHeight: 1.5,
-          border: `1px solid ${active ? chipColor : "#1f2937"}`,
+          border: `1px solid ${active ? chipColor : "#313244"}`,
           boxShadow: active
-            ? "0 0 16px rgba(96,165,250,0.3)"
+            ? "0 0 16px rgba(137,180,250,0.3)"
             : "0 0 0 rgba(0,0,0,0)",
           transition:
             "border-color 200ms ease, box-shadow 200ms ease",
@@ -294,10 +302,10 @@ function CodeSnippet({ code, active, accent, label }) {
 function MetricPill({ label, value, tone }) {
   const palette =
     tone === "hot"
-      ? { bg: "rgba(248,113,113,0.16)", border: "#ef4444", dot: "#ef4444" }
+      ? { bg: "rgba(243,139,168,0.16)", border: "#f38ba8", dot: "#f38ba8" }
       : tone === "warm"
-      ? { bg: "rgba(250,204,21,0.10)", border: "#facc15", dot: "#facc15" }
-      : { bg: "rgba(45,212,191,0.10)", border: "#22c55e", dot: "#22c55e" };
+      ? { bg: "rgba(249,226,175,0.10)", border: "#f9e2af", dot: "#f9e2af" }
+      : { bg: "rgba(166,227,161,0.10)", border: "#a6e3a1", dot: "#a6e3a1" };
 
   return (
     <span
@@ -356,7 +364,7 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
         position: "relative",
         overflow: "hidden",
         boxShadow: active
-          ? "0 0 20px rgba(59,130,246,0.3)"
+          ? "0 0 20px rgba(137,180,250,0.3)"
           : "0 0 0 rgba(0,0,0,0)",
         transition:
           "border-color 200ms ease, box-shadow 200ms ease, background 200ms ease",
@@ -368,7 +376,7 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
           inset: 0,
           opacity: active ? 0.45 : 0.1,
           backgroundImage:
-            "radial-gradient(circle at -10% 0%, rgba(56,189,248,0.4), transparent 60%), radial-gradient(circle at 120% 120%, rgba(244,114,182,0.4), transparent 50%)",
+            "radial-gradient(circle at -10% 0%, rgba(148,226,213,0.4), transparent 60%), radial-gradient(circle at 120% 120%, rgba(245,194,231,0.4), transparent 50%)",
           pointerEvents: "none",
         }}
       />
@@ -378,7 +386,7 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
           height: 16,
           borderRadius: 999,
           border: "1px solid rgba(148,163,184,0.6)",
-          background: "rgba(15,23,42,0.9)",
+          background: "rgba(30,30,46,0.9)",
           padding: 2,
           display: "flex",
           alignItems: "center",
@@ -447,10 +455,10 @@ function IRLBox({ children }) {
               marginTop: 8,
               padding: 8,
               borderRadius: 8,
-              background: "rgba(15,23,42,0.95)",
-              border: "1px dashed #374151",
+          background: "rgba(24,24,37,0.95)",
+          border: "1px dashed #45475a",
               fontSize: 10,
-              color: "#e5e7eb",
+              color: "#cdd6f4",
               animation: "textCorruption 5s ease-in-out infinite",
             }}
           >
@@ -538,9 +546,13 @@ useEffect(() => {
 
   return (
     <Panel
-      title="CPU Spinner Loop"
+      title={
+        <>
+          <span style={{ marginRight: 6 }}>🌡️</span> CPU Spinner Loop
+        </>
+      }
       subtitle="your CPU is literally screaming and you&apos;re just watching it burn"
-      accent="#f97316"
+      accent="#fab387"
       glitch={enabled && heat > 0.7}
     >
       <div
@@ -556,7 +568,7 @@ useEffect(() => {
           style={{
             fontSize: 26,
             fontVariantNumeric: "tabular-nums",
-            color: heat > 0.7 ? "#f97316" : "#e5e7eb",
+            color: heat > 0.7 ? "#fab387" : "#cdd6f4",
             animation: enabled && heat > 0.7 ? "flicker 0.3s infinite, shake 0.1s infinite" : "none",
             transform: enabled && heat > 0.7 ? "skew(1deg)" : "skew(0deg)",
           }}
@@ -572,7 +584,7 @@ useEffect(() => {
       <label
         style={{
           fontSize: 12,
-          color: "#e5e7eb",
+          color: "#cdd6f4",
           display: "flex",
           alignItems: "center",
           gap: 8,
@@ -612,10 +624,10 @@ useEffect(() => {
           const fraction = i / bars.length;
           const color =
             heat < 0.3
-              ? `rgba(45,212,191,${0.5 + fraction * 0.4})`
+              ? `rgba(166,227,161,${0.5 + fraction * 0.4})`
               : heat < 0.7
-              ? `rgba(250,204,21,${0.4 + fraction * 0.4})`
-              : `rgba(248,113,113,${0.45 + fraction * 0.4})`;
+              ? `rgba(249,226,175,${0.4 + fraction * 0.4})`
+              : `rgba(243,139,168,${0.45 + fraction * 0.4})`;
 
           return (
             <div
@@ -658,7 +670,7 @@ useEffect(() => {
       <CodeSnippet
         code={code}
         active={enabled}
-        accent="#f97316"
+        accent="#fab387"
         label="the code that turned your CPU into a space heater"
       />
     </Panel>
@@ -718,9 +730,13 @@ useEffect(() => {
 
   return (
     <Panel
-      title="Feedback Chain Recursor"
+      title={
+        <>
+          <span style={{ marginRight: 6 }}>♾️</span> Feedback Chain Recursor
+        </>
+      }
       subtitle="two effects in a toxic relationship where they keep triggering each other until your browser crashes"
-      accent="#22c55e"
+      accent="#a6e3a1"
       glitch={enabled && intensity > 0.7}
     >
       <div
@@ -765,7 +781,7 @@ useEffect(() => {
           alignItems: "center",
           gap: 12,
           fontSize: 11,
-          color: "#9ca3af",
+          color: "#bac2de",
           flexWrap: "wrap",
         }}
       >
@@ -780,7 +796,7 @@ useEffect(() => {
             style={{
               padding: "4px 8px",
               borderRadius: 999,
-              border: "1px solid rgba(34,197,94,0.7)",
+                border: "1px solid rgba(166,227,161,0.7)",
               background: "rgba(22,101,52,0.3)",
               fontSize: 11,
             }}
@@ -838,7 +854,7 @@ useEffect(() => {
               style={{
                 aspectRatio: "1 / 1",
                 borderRadius: 4,
-                background: on ? "#22c55e" : "#020617",
+                background: on ? "#a6e3a1" : "#181825",
                 opacity: on ? 0.95 : 0.25,
               }}
             />
@@ -852,8 +868,8 @@ useEffect(() => {
           marginTop: 8,
           padding: 8,
           borderRadius: 8,
-          background: "#020617",
-          border: "1px solid #111827",
+          background: "#1e1e2e",
+          border: "1px solid #313244",
           fontSize: 10,
           fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
           maxHeight: 120,
@@ -887,7 +903,7 @@ useEffect(() => {
       <CodeSnippet
         code={code}
         active={enabled}
-        accent="#22c55e"
+        accent="#a6e3a1"
         label="the code that makes React cry"
       />
     </Panel>
@@ -950,9 +966,13 @@ function MemoryLeakListenerMesh({ enabled }) {
 
   return (
     <Panel
-      title="Memory Leak Listener Mesh"
+      title={
+        <>
+          <span style={{ marginRight: 6 }}>🧠</span> Memory Leak Listener Mesh
+        </>
+      }
       subtitle="memory leak simulator 2024 - every mouse move spawns a new listener that never dies"
-      accent="#3b82f6"
+      accent="#89b4fa"
       glitch={enabled && density > 0.7}
     >
       <div
@@ -960,7 +980,7 @@ function MemoryLeakListenerMesh({ enabled }) {
           display: "flex",
           gap: 18,
           fontSize: 13,
-          color: "#e5e7eb",
+          color: "#cdd6f4",
           flexWrap: "wrap",
           alignItems: "center",
           justifyContent: "space-between",
@@ -1024,7 +1044,7 @@ function MemoryLeakListenerMesh({ enabled }) {
             alignItems: "center",
             justifyContent: "center",
             fontSize: 11,
-            color: "#9ca3af",
+            color: "#bac2de",
             textAlign: "center",
             padding: "0 8px",
           }}
@@ -1054,7 +1074,7 @@ function MemoryLeakListenerMesh({ enabled }) {
       <CodeSnippet
         code={code}
         active={enabled}
-        accent="#3b82f6"
+        accent="#89b4fa"
         label="the code that leaks memory like a sieve"
       />
     </Panel>
@@ -1110,9 +1130,13 @@ useEffect(() => {
 
   return (
     <Panel
-      title="Fetch DDOS Cannon"
+      title={
+        <>
+          <span style={{ marginRight: 6 }}>💥</span> Fetch DDOS Cannon
+        </>
+      }
       subtitle="you accidentally built a DDoS attack against your own API because you&apos;re an idiot"
-      accent="#ef4444"
+      accent="#f38ba8"
       glitch={enabled && floodLevel > 0.7}
     >
       <div
@@ -1120,7 +1144,7 @@ useEffect(() => {
           display: "flex",
           gap: 16,
           fontSize: 13,
-          color: "#e5e7eb",
+          color: "#cdd6f4",
           flexWrap: "wrap",
           alignItems: "center",
           justifyContent: "space-between",
@@ -1144,7 +1168,7 @@ useEffect(() => {
           <div
             style={{
               animation: enabled && errors > 10 ? "shake 0.1s infinite" : "none",
-              color: errors > 10 ? "#ef4444" : "#e5e7eb",
+              color: errors > 10 ? "#f38ba8" : "#cdd6f4",
             }}
           >
             errors: <strong>{errors}</strong>
@@ -1172,8 +1196,8 @@ useEffect(() => {
           style={{
             position: "absolute",
             inset: 0,
-            backgroundImage:
-              "radial-gradient(circle at 10% 0, rgba(248,113,113,0.35), transparent 55%)",
+              backgroundImage:
+                "radial-gradient(circle at 10% 0, rgba(243,139,168,0.35), transparent 55%)",
             mixBlendMode: "screen",
           }}
         />
@@ -1187,15 +1211,15 @@ useEffect(() => {
           <div
             style={{
               width: `${Math.min(100, requests)}%`,
-              background:
-                "repeating-linear-gradient(45deg,#ef4444 0,#ef4444 4px,#7f1d1d 4px,#7f1d1d 8px)",
+                background:
+                  "repeating-linear-gradient(45deg,#f38ba8 0,#f38ba8 4px,#eba0ac 4px,#eba0ac 8px)",
             }}
           />
           <div
             style={{
               width: `${Math.min(100, responses)}%`,
-              background:
-                "repeating-linear-gradient(-45deg,#22c55e 0,#22c55e 4px,#166534 4px,#166534 8px)",
+                background:
+                  "repeating-linear-gradient(-45deg,#a6e3a1 0,#a6e3a1 4px,#94e2d5 4px,#94e2d5 8px)",
             }}
           />
         </div>
@@ -1220,7 +1244,7 @@ useEffect(() => {
       <CodeSnippet
         code={code}
         active={enabled}
-        accent="#ef4444"
+        accent="#f38ba8"
         label="the code that DDoSes your own API"
       />
     </Panel>
@@ -1336,9 +1360,13 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
 
   return (
     <Panel
-      title="Widget Pyramid Scheme"
+      title={
+        <>
+          <span style={{ marginRight: 6 }}>🔮</span> Widget Pyramid Scheme
+        </>
+      }
       subtitle="widgets spawn widgets spawn widgets spawn widgets until your browser gives up and dies"
-      accent="#a855f7"
+      accent="#cba6f7"
       glitch={enabled && widgetCount > 10}
     >
       <div
@@ -1346,7 +1374,7 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
           display: "flex",
           gap: 16,
           fontSize: 13,
-          color: "#e5e7eb",
+          color: "#cdd6f4",
           flexWrap: "wrap",
           alignItems: "center",
           justifyContent: "space-between",
@@ -1413,8 +1441,8 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
           marginTop: 10,
           padding: 4,
           borderRadius: 10,
-          background: "#020617",
-          border: "1px solid #111827",
+          background: "#1e1e2e",
+          border: "1px solid #313244",
           maxHeight: 220,
           overflow: "auto",
         }}
@@ -1466,7 +1494,7 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
       <CodeSnippet
         code={code}
         active={enabled}
-        accent="#a855f7"
+        accent="#cba6f7"
         label="the code that runs a widget pyramid scheme"
       />
     </Panel>
@@ -1501,8 +1529,8 @@ export default function Page() {
         padding: 24,
         fontFamily: "system-ui, sans-serif",
         background:
-          "radial-gradient(circle at top, #020617 0%, #020617 40%, #000000 75%, #020617 100%)",
-        color: "#e5e7eb",
+          "radial-gradient(circle at top, #1e1e2e 0%, #1e1e2e 40%, #11111b 75%, #1e1e2e 100%)",
+        color: "#cdd6f4",
         position: "relative",
         overflowX: "hidden",
       }}
@@ -1515,7 +1543,7 @@ export default function Page() {
           position: "absolute",
           inset: 0,
           backgroundImage:
-            "radial-gradient(circle at 10% 0, rgba(56,189,248,0.2), transparent 55%), radial-gradient(circle at 90% 100%, rgba(124,58,237,0.25), transparent 50%)",
+            "radial-gradient(circle at 10% 0, rgba(148,226,213,0.2), transparent 55%), radial-gradient(circle at 90% 100%, rgba(203,166,247,0.25), transparent 50%)",
           opacity: 0.7,
           mixBlendMode: "screen",
           pointerEvents: "none",
@@ -1532,24 +1560,28 @@ export default function Page() {
         }}
       >
         <header style={{ marginBottom: 18 }}>
-          <h1
-            style={{
-              marginTop: 0,
-              marginBottom: 4,
-              letterSpacing: 0.15,
-              fontSize: 25,
-              textTransform: "lowercase",
-              animation: "headerGlitch 6s infinite, textCorruption 4s ease-in-out infinite",
-              transform: hasChaos ? "skew(0.5deg)" : "skew(0deg)",
-            }}
-          >
-            this is what happens when you use useEffect like a fucking moron
-          </h1>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
+            <span style={{ fontSize: 32, filter: "drop-shadow(0 0 8px rgba(203,166,247,0.5))" }}>💻</span>
+            <h1
+              style={{
+                marginTop: 0,
+                marginBottom: 0,
+                letterSpacing: 0.15,
+                fontSize: 25,
+                textTransform: "lowercase",
+                animation: "headerGlitch 6s infinite, textCorruption 4s ease-in-out infinite",
+                transform: hasChaos ? "skew(0.5deg)" : "skew(0deg)",
+              }}
+            >
+              this is what happens when you use useEffect like a fucking moron
+            </h1>
+            <span style={{ fontSize: 32, filter: "drop-shadow(0 0 8px rgba(243,139,168,0.5))" }}>🔥</span>
+          </div>
           <p
             style={{
               maxWidth: 760,
               fontSize: 13,
-              color: "#9ca3af",
+              color: "#bac2de",
               marginBottom: 10,
             }}
           >
@@ -1563,19 +1595,19 @@ export default function Page() {
               marginBottom: 12,
               padding: 10,
               borderRadius: 14,
-              background: hasChaos
-                ? "linear-gradient(90deg, rgba(248,113,113,0.18), rgba(30,64,175,0.9))"
-                : "linear-gradient(90deg, rgba(22,163,74,0.22), rgba(15,23,42,0.9))",
-              border: hasChaos
-                ? "1px solid rgba(248,113,113,0.8)"
-                : "1px solid rgba(34,197,94,0.8)",
+                background: hasChaos
+                  ? "linear-gradient(90deg, rgba(243,139,168,0.18), rgba(30,30,46,0.9))"
+                  : "linear-gradient(90deg, rgba(166,227,161,0.22), rgba(30,30,46,0.9))",
+                border: hasChaos
+                  ? "1px solid rgba(243,139,168,0.8)"
+                  : "1px solid rgba(166,227,161,0.8)",
               display: "flex",
               alignItems: "center",
               gap: 10,
               flexWrap: "wrap",
-              boxShadow: hasChaos
-                ? "0 0 26px rgba(248,113,113,0.55)"
-                : "0 0 20px rgba(34,197,94,0.4)",
+                boxShadow: hasChaos
+                  ? "0 0 26px rgba(243,139,168,0.55)"
+                  : "0 0 20px rgba(166,227,161,0.4)",
             }}
           >
             <span
@@ -1614,8 +1646,8 @@ export default function Page() {
               marginBottom: 14,
               padding: 12,
               borderRadius: 16,
-              background: "rgba(2,6,23,0.95)",
-              border: "1px solid rgba(148,163,184,0.35)",
+          background: "rgba(24,24,37,0.95)",
+          border: "1px solid rgba(108,112,134,0.35)",
               display: "flex",
               alignItems: "center",
               gap: 12,
@@ -1624,7 +1656,9 @@ export default function Page() {
               boxShadow: "0 0 40px rgba(15,23,42,0.9)",
             }}
           >
-            <span style={{ opacity: 0.9, whiteSpace: "nowrap", flexShrink: 0 }}>corruption meter</span>
+            <span style={{ opacity: 0.9, whiteSpace: "nowrap", flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 14 }}>📊</span> corruption meter
+            </span>
             <div
               style={{
                 position: "relative",
@@ -1632,9 +1666,9 @@ export default function Page() {
                 height: 12,
                 borderRadius: 999,
                 background:
-                  "linear-gradient(90deg,#022c22,#020617,#111827,#020617)",
+                  "linear-gradient(90deg,#1e2320,#1e1e2e,#313244,#1e1e2e)",
                 overflow: "hidden",
-                border: "1px solid #111827",
+                border: "1px solid #313244",
                 flexShrink: 0,
               }}
             >
@@ -1644,10 +1678,10 @@ export default function Page() {
                   inset: 0,
                   background:
                     chaosTone === "hot"
-                      ? "linear-gradient(90deg,#22c55e,#eab308,#f97316,#ef4444)"
+                      ? "linear-gradient(90deg,#a6e3a1,#f9e2af,#fab387,#f38ba8)"
                       : chaosTone === "warm"
-                      ? "linear-gradient(90deg,#22c55e,#a3e635,#eab308)"
-                      : "linear-gradient(90deg,#22c55e,#22c55e,#a3e635)",
+                      ? "linear-gradient(90deg,#a6e3a1,#94e2d5,#f9e2af)"
+                      : "linear-gradient(90deg,#a6e3a1,#a6e3a1,#94e2d5)",
                   transformOrigin: "left center",
                   transform: `scaleX(${chaos / 12})`,
                   transition: "transform 160ms linear",
@@ -1699,11 +1733,11 @@ export default function Page() {
                   width: 9,
                   height: 9,
                   borderRadius: 999,
-                  background: chaos === 0 ? "#22c55e" : "#ef4444",
+                  background: chaos === 0 ? "#a6e3a1" : "#f38ba8",
                   boxShadow:
                     chaos === 0
-                      ? "0 0 12px rgba(34,197,94,0.8)"
-                      : "0 0 16px rgba(239,68,68,0.9)",
+                      ? "0 0 12px rgba(166,227,161,0.8)"
+                      : "0 0 16px rgba(243,139,168,0.9)",
                 }}
               />
               global noise: {globalNoiseLog.length} entries
@@ -1714,7 +1748,7 @@ export default function Page() {
           <div
             style={{
               fontSize: 10,
-              color: "#9ca3af",
+              color: "#bac2de",
               opacity: 0.9,
               display: "flex",
               gap: 6,
@@ -1722,17 +1756,20 @@ export default function Page() {
               flexWrap: "wrap",
             }}
           >
-            <span
-              style={{
-                padding: "1px 6px",
-                borderRadius: 999,
-                border: "1px solid rgba(148,163,184,0.6)",
-                textTransform: "uppercase",
-                letterSpacing: 0.1,
-              }}
-            >
-              hydration gossip
-            </span>
+              <span
+                style={{
+                  padding: "1px 6px",
+                  borderRadius: 999,
+                  border: "1px solid rgba(108,112,134,0.6)",
+                  textTransform: "uppercase",
+                  letterSpacing: 0.1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                }}
+              >
+                <span style={{ fontSize: 10 }}>💧</span> hydration gossip
+              </span>
             <span>
               Background orbs used <code>Math.random()</code> in render, React yelled about hydration. Fixed with deterministic PRNG. The bug wasn&apos;t React, it was side effects in render. Classic.
             </span>
@@ -1753,7 +1790,7 @@ export default function Page() {
             description="interval + RAF + random deps = your CPU commits suicide"
             active={brainOn}
             onChange={setBrainOn}
-            accent="#f97316"
+            accent="#fab387"
             hint="cpu"
           />
           <IssueToggle
@@ -1761,7 +1798,7 @@ export default function Page() {
             description="two effects in a toxic relationship = infinite renders"
             active={loopOn}
             onChange={setLoopOn}
-            accent="#22c55e"
+            accent="#a6e3a1"
             hint="render loop"
           />
           <IssueToggle
@@ -1769,7 +1806,7 @@ export default function Page() {
             description="mousemove listeners that leak memory like a sieve"
             active={meshOn}
             onChange={setMeshOn}
-            accent="#3b82f6"
+            accent="#89b4fa"
             hint="dom haunt"
           />
           <IssueToggle
@@ -1777,7 +1814,7 @@ export default function Page() {
             description="you accidentally DDoS your own API because you&apos;re an idiot"
             active={ddosOn}
             onChange={setDdosOn}
-            accent="#ef4444"
+            accent="#f38ba8"
             hint="network"
           />
           <IssueToggle
@@ -1785,7 +1822,7 @@ export default function Page() {
             description="widgets spawn widgets like cancer, intervals spawn intervals like cancer"
             active={gridOn}
             onChange={setGridOn}
-            accent="#a855f7"
+            accent="#cba6f7"
             hint="fan chorus"
           />
         </section>
@@ -1809,7 +1846,7 @@ export default function Page() {
             marginTop: 24,
             fontSize: 11,
             opacity: 0.7,
-            color: "#9ca3af",
+            color: "#bac2de",
           }}
         >
           Fix these. Rewrite them properly. Stop using useEffect for everything. Your CPU will thank you. Your users will thank you. Your oncall will thank you. Just fucking fix them.
@@ -2417,7 +2454,7 @@ export default function Page() {
       >
           <p style={{ margin: 0 }}>
             🔴 LIVE: {new Date().toLocaleString()} | DEVELOPERS AWAKENED:{" "}
-            {Math.floor(Date.now() % 10000) + 1000} | STATUS: THEY KNOW
+            {Math.floor(globalNoiseLog.length % 10000) + 1000} | STATUS: THEY KNOW
           </p>
          <p style={{ margin: "8px 0 0 0", fontSize: 9, opacity: 0.5 }}>
            ⚠️ TRANSMISSION INTERCEPTED ⚠️ | REACT TEAM RESPONSE: &quot;WE SEE YOU&quot; | 
