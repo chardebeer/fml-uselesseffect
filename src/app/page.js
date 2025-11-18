@@ -342,25 +342,26 @@ function MetricPill({ label, value, tone }) {
 
 function IssueToggle({ label, description, active, onChange, accent, hint }) {
   const bg = active
-    ? `radial-gradient(circle at top left, ${accent}, #020617)`
-    : "linear-gradient(135deg, #020617, #020617)";
+    ? `radial-gradient(circle at top left, ${accent}, #1e1e2e)`
+    : "linear-gradient(135deg, #1e1e2e, #1e1e2e)";
   return (
     <button
       type="button"
       onClick={() => onChange(!active)}
       style={{
-        flex: "1 1 220px",
+        flex: "1 1 240px",
+        minWidth: 0,
         textAlign: "left",
-        padding: 10,
+        padding: 12,
         borderRadius: 14,
-        border: `1px solid ${active ? accent : "#1f2937"}`,
+        border: `1px solid ${active ? accent : "#313244"}`,
         background: bg,
-        color: "#e5e7eb",
+        color: "#cdd6f4",
         fontSize: 12,
         cursor: "pointer",
         display: "flex",
-        alignItems: "center",
-        gap: 10,
+        alignItems: "flex-start",
+        gap: 12,
         position: "relative",
         overflow: "hidden",
         boxShadow: active
@@ -385,13 +386,14 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
           width: 28,
           height: 16,
           borderRadius: 999,
-          border: "1px solid rgba(148,163,184,0.6)",
+          border: "1px solid rgba(108,112,134,0.6)",
           background: "rgba(30,30,46,0.9)",
           padding: 2,
           display: "flex",
           alignItems: "center",
           justifyContent: active ? "flex-end" : "flex-start",
           zIndex: 1,
+          flexShrink: 0,
         }}
       >
         <div
@@ -399,12 +401,12 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
             width: 10,
             height: 10,
             borderRadius: 999,
-            background: active ? accent : "#6b7280",
+            background: active ? accent : "#6c7086",
             boxShadow: active ? `0 0 12px ${accent}` : "none",
           }}
         />
       </div>
-      <div style={{ zIndex: 1 }}>
+      <div style={{ zIndex: 1, flex: 1, minWidth: 0 }}>
         <div
           style={{
             fontSize: 12,
@@ -413,19 +415,22 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
             display: "flex",
             alignItems: "center",
             gap: 6,
+            flexWrap: "wrap",
           }}
         >
-          {label}
+          <span style={{ whiteSpace: "nowrap" }}>{label}</span>
           {hint && (
             <span
               style={{
                 fontSize: 9,
-                padding: "1px 6px",
+                padding: "2px 6px",
                 borderRadius: 999,
-                border: "1px solid rgba(148,163,184,0.6)",
+                border: "1px solid rgba(108,112,134,0.6)",
                 textTransform: "uppercase",
                 letterSpacing: 0.12,
                 opacity: 0.85,
+                whiteSpace: "nowrap",
+                flexShrink: 0,
               }}
             >
               {hint}
@@ -434,10 +439,10 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
         </div>
         <div
           style={{
-            marginTop: 2,
+            marginTop: 4,
             fontSize: 11,
             opacity: 0.78,
-            maxWidth: 260,
+            lineHeight: 1.4,
           }}
         >
           {description}
@@ -450,21 +455,21 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
 // Shared IRL box
 function IRLBox({ children }) {
   return (
-          <div
-            style={{
-              marginTop: 8,
-              padding: 8,
-              borderRadius: 8,
+    <div
+      style={{
+        marginTop: 8,
+        padding: 8,
+        borderRadius: 8,
           background: "rgba(24,24,37,0.95)",
           border: "1px dashed #45475a",
-              fontSize: 10,
+        fontSize: 10,
               color: "#cdd6f4",
               animation: "textCorruption 5s ease-in-out infinite",
-            }}
-          >
-            <div style={{ fontWeight: 500, fontSize: 10, marginBottom: 3 }}>
-              IRL symptoms
-            </div>
+      }}
+    >
+      <div style={{ fontWeight: 500, fontSize: 10, marginBottom: 3 }}>
+        IRL symptoms
+      </div>
       <ul style={{ margin: 0, paddingLeft: 16, listStyle: "disc" }}>
         {children}
       </ul>
@@ -551,7 +556,7 @@ useEffect(() => {
           <span style={{ marginRight: 6 }}>🌡️</span> CPU Spinner Loop
         </>
       }
-      subtitle="your CPU is literally screaming and you&apos;re just watching it burn"
+      subtitle="your CPU is literally screaming and you&apos;re just watching it burn (╥﹏╥)"
       accent="#fab387"
       glitch={enabled && heat > 0.7}
     >
@@ -643,27 +648,27 @@ useEffect(() => {
         })}
       </div>
 
-      <ul style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
+      <ul style={{ marginTop: 8, fontSize: 11, color: "#bac2de" }}>
         <li>
-          Effect depends on <code>spinner</code> and also sets <code>spinner</code> every 16ms. It&apos;s like setting an alarm that goes off every time you check if the alarm is set, except the alarm is your CPU and it&apos;s actually going off.
+          Effect depends on <code>spinner</code> and also sets <code>spinner</code> every 16ms. It&apos;s like setting an alarm that goes off every time you check if the alarm is set, except the alarm is your CPU and it&apos;s actually going off. (╥﹏╥)
         </li>
         <li>
-          <code>Math.random()</code> in deps means this effect runs on every single render forever. React is having a fucking stroke.
+          <code>Math.random()</code> in deps means this effect runs on every single render forever. React is having a fucking stroke. (ノಠ益ಠ)ノ
         </li>
         <li>
-          Interval never gets cleared. RAF never stops. Your laptop is now a space heater that occasionally renders React components.
+          Interval never gets cleared. RAF never stops. Your laptop is now a space heater that occasionally renders React components. (╯°□°）╯
         </li>
       </ul>
 
       <IRLBox>
         <li>
-          Local: fans sound like a jet taking off, VS Code freezes every 2 seconds, CPU graph looks like a heart attack.
+          Local: fans sound like a jet taking off, VS Code freezes every 2 seconds, CPU graph looks like a heart attack. (╯°□°）╯
         </li>
         <li>
-          Staging: pods at 90% CPU doing absolutely fucking nothing, autoscaler panics and spawns 50 more pods, CPU still at 90%.
+          Staging: pods at 90% CPU doing absolutely fucking nothing, autoscaler panics and spawns 50 more pods, CPU still at 90%. (ノಠ益ಠ)ノ
         </li>
         <li>
-          Prod: users&apos; phones literally get hot enough to cook eggs, you blame &quot;browser optimization&quot; and close the ticket.
+          Prod: users&apos; phones literally get hot enough to cook eggs, you blame &quot;browser optimization&quot; and close the ticket. (╥﹏╥)
         </li>
       </IRLBox>
 
@@ -735,7 +740,7 @@ useEffect(() => {
           <span style={{ marginRight: 6 }}>♾️</span> Feedback Chain Recursor
         </>
       }
-      subtitle="two effects in a toxic relationship where they keep triggering each other until your browser crashes"
+      subtitle="two effects in a toxic relationship where they keep triggering each other until your browser crashes (ノಠ益ಠ)ノ"
       accent="#a6e3a1"
       glitch={enabled && intensity > 0.7}
     >
@@ -878,7 +883,7 @@ useEffect(() => {
       >
         {history.length === 0 && (
           <div style={{ opacity: 0.7 }}>
-            flip the toggle to watch two effects have a mental breakdown and trigger each other until your browser commits suicide
+            flip the toggle to watch two effects have a mental breakdown and trigger each other until your browser commits suicide (ノಠ益ಠ)ノ
           </div>
         )}
         {history.map((line, idx) => (
@@ -890,13 +895,13 @@ useEffect(() => {
 
       <IRLBox>
         <li>
-          Local: type one fucking character, whole app re-renders 50 times, React DevTools looks like a strobe light.
+          Local: type one fucking character, whole app re-renders 50 times, React DevTools looks like a strobe light. (ﾉಥ益ಥ)ﾉ
         </li>
         <li>
-          Staging: hover over literally anything, render apocalypse happens, you blame React 18 and close the issue.
+          Staging: hover over literally anything, render apocalypse happens, you blame React 18 and close the issue. (╯°□°）╯
         </li>
         <li>
-          Prod: &quot;feels slow&quot; bugs that only happen when real users use it, you can&apos;t reproduce it, users think you&apos;re gaslighting them.
+          Prod: &quot;feels slow&quot; bugs that only happen when real users use it, you can&apos;t reproduce it, users think you&apos;re gaslighting them. (ノಠ益ಠ)ノ
         </li>
       </IRLBox>
 
@@ -971,7 +976,7 @@ function MemoryLeakListenerMesh({ enabled }) {
           <span style={{ marginRight: 6 }}>🧠</span> Memory Leak Listener Mesh
         </>
       }
-      subtitle="memory leak simulator 2024 - every mouse move spawns a new listener that never dies"
+      subtitle="memory leak simulator 2024 - every mouse move spawns a new listener that never dies (╯︵╰,)"
       accent="#89b4fa"
       glitch={enabled && density > 0.7}
     >
@@ -1049,25 +1054,25 @@ function MemoryLeakListenerMesh({ enabled }) {
             padding: "0 8px",
           }}
         >
-          Move your mouse. Each listener is a future &quot;my browser crashed&quot; bug report that you&apos;ll never fix.
+          Move your mouse. Each listener is a future &quot;my browser crashed&quot; bug report that you&apos;ll never fix. (╯︵╰,)
         </div>
       </div>
 
-      <ul style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
-        <li>Effect depends on <code>moves</code>, so it runs every single time you move the mouse. Every. Single. Time.</li>
-        <li>Each run adds another mousemove listener to the document. They pile up like garbage in a landfill.</li>
-        <li>Cleanup function is completely fucking wrong, so listeners never get removed. Memory leak apocalypse.</li>
+      <ul style={{ marginTop: 8, fontSize: 11, color: "#bac2de" }}>
+        <li>Effect depends on <code>moves</code>, so it runs every single time you move the mouse. Every. Single. Time. (╯︵╰,)</li>
+        <li>Each run adds another mousemove listener to the document. They pile up like garbage in a landfill. (ﾉಥ益ಥ)ﾉ</li>
+        <li>Cleanup function is completely fucking wrong, so listeners never get removed. Memory leak apocalypse. (ノಠ益ಠ)ノ</li>
       </ul>
 
       <IRLBox>
         <li>
-          Local: move mouse, console explodes with 1000 logs per second, can&apos;t see your actual logs, you give up debugging.
+          Local: move mouse, console explodes with 1000 logs per second, can&apos;t see your actual logs, you give up debugging. (╯︵╰,)
         </li>
         <li>
-          Staging: navigate around, memory climbs to 2GB for no reason, you have no idea why, blame Next.js and move on.
+          Staging: navigate around, memory climbs to 2GB for no reason, you have no idea why, blame Next.js and move on. (╥﹏╥)
         </li>
         <li>
-          Prod: old phones lag after 2 minutes, users close the app, you never find out why, ticket gets closed as &quot;device too old&quot;.
+          Prod: old phones lag after 2 minutes, users close the app, you never find out why, ticket gets closed as &quot;device too old&quot;. (ノಠ益ಠ)ノ
         </li>
       </IRLBox>
 
@@ -1135,7 +1140,7 @@ useEffect(() => {
           <span style={{ marginRight: 6 }}>💥</span> Fetch DDOS Cannon
         </>
       }
-      subtitle="you accidentally built a DDoS attack against your own API because you&apos;re an idiot"
+      subtitle="you accidentally built a DDoS attack against your own API because you&apos;re an idiot (╯°□°）╯"
       accent="#f38ba8"
       glitch={enabled && floodLevel > 0.7}
     >
@@ -1196,7 +1201,7 @@ useEffect(() => {
           style={{
             position: "absolute",
             inset: 0,
-              backgroundImage:
+            backgroundImage:
                 "radial-gradient(circle at 10% 0, rgba(243,139,168,0.35), transparent 55%)",
             mixBlendMode: "screen",
           }}
@@ -1211,33 +1216,33 @@ useEffect(() => {
           <div
             style={{
               width: `${Math.min(100, requests)}%`,
-                background:
+              background:
                   "repeating-linear-gradient(45deg,#f38ba8 0,#f38ba8 4px,#eba0ac 4px,#eba0ac 8px)",
             }}
           />
           <div
             style={{
               width: `${Math.min(100, responses)}%`,
-                background:
+              background:
                   "repeating-linear-gradient(-45deg,#a6e3a1 0,#a6e3a1 4px,#94e2d5 4px,#94e2d5 8px)",
             }}
           />
         </div>
       </div>
 
-      <p style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
-        Network tab is just a wall of identical requests. Backend graphs go vertical. You blame infrastructure and go home early.
+      <p style={{ marginTop: 8, fontSize: 11, color: "#bac2de" }}>
+        Network tab is just a wall of identical requests. Backend graphs go vertical. You blame infrastructure and go home early. (╯°□°）╯
       </p>
 
       <IRLBox>
         <li>
-          Local: network tab is just 500 identical requests, can&apos;t find the one you need, you give up and use Postman.
+          Local: network tab is just 500 identical requests, can&apos;t find the one you need, you give up and use Postman. (╯°□°）╯
         </li>
         <li>
-          Staging: SRE asks why one page load = 200 API calls. You say &quot;must be caching&quot; and hope they don&apos;t check.
+          Staging: SRE asks why one page load = 200 API calls. You say &quot;must be caching&quot; and hope they don&apos;t check. (ノಠ益ಠ)ノ
         </li>
         <li>
-          Prod: rate limits hit, errors spike, PM says backend is broken, you close DevTools and pretend you didn&apos;t see it.
+          Prod: rate limits hit, errors spike, PM says backend is broken, you close DevTools and pretend you didn&apos;t see it. (╥﹏╥)
         </li>
       </IRLBox>
 
@@ -1365,7 +1370,7 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
           <span style={{ marginRight: 6 }}>🔮</span> Widget Pyramid Scheme
         </>
       }
-      subtitle="widgets spawn widgets spawn widgets spawn widgets until your browser gives up and dies"
+      subtitle="widgets spawn widgets spawn widgets spawn widgets until your browser gives up and dies (ﾉಥ益ಥ)ﾉ"
       accent="#cba6f7"
       glitch={enabled && widgetCount > 10}
     >
@@ -1467,27 +1472,27 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
         </div>
       </div>
 
-      <ul style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
+      <ul style={{ marginTop: 8, fontSize: 11, color: "#bac2de" }}>
         <li>
-          Each widget creates its own interval instead of one shared timer. It&apos;s like having 20 separate timers all doing the same thing, except they&apos;re all slightly out of sync and your CPU hates you.
+          Each widget creates its own interval instead of one shared timer. It&apos;s like having 20 separate timers all doing the same thing, except they&apos;re all slightly out of sync and your CPU hates you. (╯°□°）╯
         </li>
         <li>
-          Effect depends on <code>hits</code>, so it recreates every single tick. The cleanup runs, but then the effect runs again immediately because <code>hits</code> changed. The global array keeps growing forever like a tumor.
+          Effect depends on <code>hits</code>, so it recreates every single tick. The cleanup runs, but then the effect runs again immediately because <code>hits</code> changed. The global array keeps growing forever like a tumor. (ﾉಥ益ಥ)ﾉ
         </li>
         <li>
-          Widgets call <code>onPanic()</code> to spawn more widgets, which spawn more intervals, which spawn more widgets. It&apos;s a fucking pyramid scheme where the product is CPU usage and everyone loses.
+          Widgets call <code>onPanic()</code> to spawn more widgets, which spawn more intervals, which spawn more widgets. It&apos;s a fucking pyramid scheme where the product is CPU usage and everyone loses. (ノಠ益ಠ)ノ
         </li>
       </ul>
 
       <IRLBox>
         <li>
-          Local: dashboard feels slow, leave it open for lunch, come back, CPU at 100%, laptop sounds like a jet engine.
+          Local: dashboard feels slow, leave it open for lunch, come back, CPU at 100%, laptop sounds like a jet engine. (ﾉಥ益ಥ)ﾉ
         </li>
         <li>
-          Staging: 20 widgets = 20 identical API calls every second, backend graphs look like a fucking heart attack.
+          Staging: 20 widgets = 20 identical API calls every second, backend graphs look like a fucking heart attack. (╯°□°）╯
         </li>
         <li>
-          Prod: analytics page open for 10 minutes, phone gets hot enough to cook eggs, browser kills the tab, user thinks your app is broken.
+          Prod: analytics page open for 10 minutes, phone gets hot enough to cook eggs, browser kills the tab, user thinks your app is broken. (ノಠ益ಠ)ノ
         </li>
       </IRLBox>
 
@@ -1562,21 +1567,39 @@ export default function Page() {
         <header style={{ marginBottom: 18 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
             <span style={{ fontSize: 32, filter: "drop-shadow(0 0 8px rgba(203,166,247,0.5))" }}>💻</span>
-            <h1
-              style={{
-                marginTop: 0,
+          <h1
+            style={{
+              marginTop: 0,
                 marginBottom: 0,
-                letterSpacing: 0.15,
-                fontSize: 25,
-                textTransform: "lowercase",
+              letterSpacing: 0.15,
+              fontSize: 25,
+              textTransform: "lowercase",
                 animation: "headerGlitch 6s infinite, textCorruption 4s ease-in-out infinite",
                 transform: hasChaos ? "skew(0.5deg)" : "skew(0deg)",
-              }}
-            >
+            }}
+          >
               this is what happens when you use useEffect like a fucking moron
-            </h1>
+          </h1>
             <span style={{ fontSize: 32, filter: "drop-shadow(0 0 8px rgba(243,139,168,0.5))" }}>🔥</span>
           </div>
+          {hasChaos && (
+            <div
+              style={{
+                marginTop: 8,
+                marginBottom: 8,
+                fontSize: 10,
+                fontFamily: "monospace",
+                color: "#f38ba8",
+                opacity: 0.8,
+                textAlign: "center",
+                lineHeight: 1.2,
+              }}
+            >
+              <pre style={{ margin: 0, fontFamily: "monospace" }}>
+{`(╯°□°）╯︵ ┻━┻  (ノಠ益ಠ)ノ彡┻━┻  ┬─┬ノ( º _ ºノ)`}
+              </pre>
+            </div>
+          )}
           <p
             style={{
               maxWidth: 760,
@@ -1595,17 +1618,17 @@ export default function Page() {
               marginBottom: 12,
               padding: 10,
               borderRadius: 14,
-                background: hasChaos
+              background: hasChaos
                   ? "linear-gradient(90deg, rgba(243,139,168,0.18), rgba(30,30,46,0.9))"
                   : "linear-gradient(90deg, rgba(166,227,161,0.22), rgba(30,30,46,0.9))",
-                border: hasChaos
+              border: hasChaos
                   ? "1px solid rgba(243,139,168,0.8)"
                   : "1px solid rgba(166,227,161,0.8)",
               display: "flex",
               alignItems: "center",
               gap: 10,
               flexWrap: "wrap",
-                boxShadow: hasChaos
+              boxShadow: hasChaos
                   ? "0 0 26px rgba(243,139,168,0.55)"
                   : "0 0 20px rgba(166,227,161,0.4)",
             }}
@@ -1756,20 +1779,20 @@ export default function Page() {
               flexWrap: "wrap",
             }}
           >
-              <span
-                style={{
-                  padding: "1px 6px",
-                  borderRadius: 999,
+            <span
+              style={{
+                padding: "1px 6px",
+                borderRadius: 999,
                   border: "1px solid rgba(108,112,134,0.6)",
-                  textTransform: "uppercase",
-                  letterSpacing: 0.1,
+                textTransform: "uppercase",
+                letterSpacing: 0.1,
                   display: "flex",
                   alignItems: "center",
                   gap: 4,
-                }}
-              >
+              }}
+            >
                 <span style={{ fontSize: 10 }}>💧</span> hydration gossip
-              </span>
+            </span>
             <span>
               Background orbs used <code>Math.random()</code> in render, React yelled about hydration. Fixed with deterministic PRNG. The bug wasn&apos;t React, it was side effects in render. Classic.
             </span>
@@ -1778,9 +1801,9 @@ export default function Page() {
 
         <section
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 10,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: 12,
             marginBottom: 20,
             fontSize: 12,
           }}
@@ -1850,6 +1873,25 @@ export default function Page() {
           }}
         >
           Fix these. Rewrite them properly. Stop using useEffect for everything. Your CPU will thank you. Your users will thank you. Your oncall will thank you. Just fucking fix them.
+          
+          <div
+            style={{
+              marginTop: 16,
+              fontSize: 9,
+              fontFamily: "monospace",
+              color: "#cba6f7",
+              opacity: 0.7,
+              textAlign: "center",
+              lineHeight: 1.3,
+            }}
+          >
+            <pre style={{ margin: 0, fontFamily: "monospace" }}>
+{`┌─────────────────────────────────────┐
+│  (╯°□°）╯︵ ┻━┻  WHY  ┻━┻  (╯°□°）╯  │
+│     WHY DID YOU DO THIS TO ME         │
+└─────────────────────────────────────┘`}
+            </pre>
+          </div>
         </p>
 
 
@@ -1905,6 +1947,24 @@ export default function Page() {
               >
                 ⚠️ WAKE UP DEVELOPERS ⚠️
               </h2>
+              <div
+                style={{
+                  marginTop: 12,
+                  fontSize: 8,
+                  fontFamily: "monospace",
+                  color: "#fecaca",
+                  opacity: 0.9,
+                  textAlign: "center",
+                  lineHeight: 1.2,
+                }}
+              >
+                <pre style={{ margin: 0, fontFamily: "monospace" }}>
+{`╔═══════════════════════════════════╗
+║  (ノಠ益ಠ)ノ彡┻━┻  THE TRUTH  ┻━┻  ║
+║     THEY DON'T WANT YOU TO KNOW    ║
+╚═══════════════════════════════════╝`}
+                </pre>
+              </div>
             </div>
 
             <div
@@ -2129,7 +2189,7 @@ export default function Page() {
             loop so powerful it begins to heat the office.
           </li>
           <li style={{ margin: "6px 0" }}>
-             2024: Architect removes all side effects, ships purely functional
+             2025: Architect removes all side effects, ships purely functional
              code. Recruiter marks them as &quot;not collaborative&quot; and
              recommends more useEffect.
            </li>
