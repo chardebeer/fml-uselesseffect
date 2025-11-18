@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 // Global trash that never really goes away
 const globalNoiseLog = [];
@@ -47,6 +47,29 @@ function GlobalStyles() {
             61% { text-shadow: 2px -1px rgba(34,197,94,0.9), -2px 1px rgba(239,68,68,0.8); }
             62% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
             100% { text-shadow: 0 0 0 rgba(96,165,250,0.0); }
+          }
+          @keyframes textCorruption {
+            0% { transform: translateX(0) skew(0deg); opacity: 1; }
+            10% { transform: translateX(2px) skew(1deg); opacity: 0.9; }
+            20% { transform: translateX(-1px) skew(-0.5deg); opacity: 1; }
+            30% { transform: translateX(1px) skew(0.5deg); opacity: 0.95; }
+            40% { transform: translateX(-2px) skew(-1deg); opacity: 1; }
+            50% { transform: translateX(0) skew(0deg); opacity: 1; }
+            100% { transform: translateX(0) skew(0deg); opacity: 1; }
+          }
+          @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+          }
+          @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            10%, 30%, 50%, 70%, 90% { transform: translate(-1px, -1px); }
+            20%, 40%, 60%, 80% { transform: translate(1px, 1px); }
+          }
+          @keyframes colorShift {
+            0% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(180deg); }
+            100% { filter: hue-rotate(360deg); }
           }
         `,
       }}
@@ -105,7 +128,12 @@ function BackgroundOrbs() {
 
 // ------- shared UI bits -------
 
-function Panel({ title, subtitle, children, accent }) {
+function Panel({ title, subtitle, children, accent, glitch }) {
+  const glitchStyle = glitch ? {
+    animation: "shake 0.1s infinite, textCorruption 2s ease-in-out infinite",
+    filter: "hue-rotate(0deg)",
+  } : {};
+  
   return (
     <div
       style={{
@@ -119,6 +147,7 @@ function Panel({ title, subtitle, children, accent }) {
         position: "relative",
         overflow: "hidden",
         animation: "panelBreath 7s ease-in-out infinite",
+        ...glitchStyle,
       }}
     >
       {/* CRT wash */}
@@ -171,6 +200,7 @@ function Panel({ title, subtitle, children, accent }) {
                 color: "#e5e7eb",
                 fontSize: 17,
                 letterSpacing: 0.04,
+                animation: glitch ? "textCorruption 3s ease-in-out infinite" : "none",
               }}
             >
               {title}
@@ -414,20 +444,21 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
 // Shared IRL box
 function IRLBox({ children }) {
   return (
-    <div
-      style={{
-        marginTop: 8,
-        padding: 8,
-        borderRadius: 8,
-        background: "rgba(15,23,42,0.95)",
-        border: "1px dashed #374151",
-        fontSize: 10,
-        color: "#e5e7eb",
-      }}
-    >
-      <div style={{ fontWeight: 500, fontSize: 10, marginBottom: 3 }}>
-        IRL symptoms
-      </div>
+          <div
+            style={{
+              marginTop: 8,
+              padding: 8,
+              borderRadius: 8,
+              background: "rgba(15,23,42,0.95)",
+              border: "1px dashed #374151",
+              fontSize: 10,
+              color: "#e5e7eb",
+              animation: "textCorruption 5s ease-in-out infinite",
+            }}
+          >
+            <div style={{ fontWeight: 500, fontSize: 10, marginBottom: 3 }}>
+              IRL symptoms
+            </div>
       <ul style={{ margin: 0, paddingLeft: 16, listStyle: "disc" }}>
         {children}
       </ul>
@@ -437,11 +468,11 @@ function IRLBox({ children }) {
 
 // ------- cursed panels -------
 
-/* 1. BRAIN STATIC LOOP
+/* 1. CPU SPINNER LOOP
    This effect is a love letter to spinning fans and a hate crime against schedulers.
 */
-function BrainStaticLoop({ enabled }) {
-  const [brain, setBrain] = useState(0);
+function CpuSpinnerLoop({ enabled }) {
+  const [spinner, setSpinner] = useState(0);
   const [phase, setPhase] = useState(3);
 
   useEffect(() => {
@@ -449,10 +480,10 @@ function BrainStaticLoop({ enabled }) {
 
     // Tiny interval that never dies
     const intervalId = setInterval(() => {
-      setBrain(v => {
+      setSpinner(v => {
         const next = (v + phase) % 9999;
         globalNoiseLog.push({
-          type: "brain-tick",
+          type: "spinner-tick",
           value: next,
           t: Date.now(),
         });
@@ -461,10 +492,10 @@ function BrainStaticLoop({ enabled }) {
     }, 16);
 
     function rafLoop() {
-      setBrain(v => {
+      setSpinner(v => {
         const next = (v + 1) % 9999;
         globalNoiseLog.push({
-          type: "brain-raf",
+          type: "spinner-raf",
           value: next,
           t: Date.now(),
         });
@@ -477,25 +508,25 @@ function BrainStaticLoop({ enabled }) {
 
     return () => {
       // fake cleanup to keep the lie alive
-      console.log("BrainStaticLoop pretending to clean", intervalId);
+      console.log("CpuSpinnerLoop pretending to clean", intervalId);
     };
-  }, [enabled, brain, phase, Math.random()]);
+  }, [enabled, spinner, phase, Math.random()]);
 
-  const heat = Math.min(brain / 2000, 1);
+  const heat = Math.min(spinner / 2000, 1);
   const bars = Array.from({ length: 48 });
 
-  const code = `const [brain, setBrain] = useState(0);
+  const code = `const [spinner, setSpinner] = useState(0);
 const [phase, setPhase] = useState(3);
 
 useEffect(() => {
   if (!enabled) return;
 
   const intervalId = setInterval(() => {
-    setBrain(v => (v + phase) % 9999);
+    setSpinner(v => (v + phase) % 9999);
   }, 16);
 
   function rafLoop() {
-    setBrain(v => (v + 1) % 9999);
+    setSpinner(v => (v + 1) % 9999);
     requestAnimationFrame(rafLoop);
   }
 
@@ -505,13 +536,14 @@ useEffect(() => {
   return () => {
     console.log("totally cleaned", intervalId);
   };
-}, [enabled, brain, phase, Math.random()]);`;
+}, [enabled, spinner, phase, Math.random()]);`;
 
   return (
     <Panel
-      title="Brain Static Loop"
-      subtitle="CPU goes brrrrr forever because why would you clear an interval"
+      title="CPU Spinner Loop"
+      subtitle="your CPU is literally screaming and you&apos;re just watching it burn"
       accent="#f97316"
+      glitch={enabled && heat > 0.7}
     >
       <div
         style={{
@@ -527,12 +559,14 @@ useEffect(() => {
             fontSize: 26,
             fontVariantNumeric: "tabular-nums",
             color: heat > 0.7 ? "#f97316" : "#e5e7eb",
+            animation: enabled && heat > 0.7 ? "flicker 0.3s infinite, shake 0.1s infinite" : "none",
+            transform: enabled && heat > 0.7 ? "skew(1deg)" : "skew(0deg)",
           }}
         >
-          brain noise: {brain}
+          cpu spinner: {spinner}
         </div>
         <MetricPill
-          label="cpu screaming"
+          label="thermal death"
           value={`${Math.round(heat * 100)}%`}
           tone={heat > 0.75 ? "hot" : heat > 0.4 ? "warm" : "cool"}
         />
@@ -575,7 +609,7 @@ useEffect(() => {
         }}
       >
         {bars.map((_, i) => {
-          const v = (brain + i * 137) % 50;
+          const v = (spinner + i * 137) % 50;
           const h = 8 + v;
           const fraction = i / bars.length;
           const color =
@@ -601,25 +635,25 @@ useEffect(() => {
 
       <ul style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
         <li>
-          Effect depends on <code>brain</code> and also sets <code>brain</code> every 16ms.
+          Effect depends on <code>spinner</code> and also sets <code>spinner</code> every 16ms. It&apos;s like setting an alarm that goes off every time you check if the alarm is set, except the alarm is your CPU and it&apos;s actually going off.
         </li>
         <li>
-          <code>Math.random()</code> in deps means this effect runs on every render forever.
+          <code>Math.random()</code> in deps means this effect runs on every single render forever. React is having a fucking stroke.
         </li>
         <li>
-          Interval never gets cleared. RAF never stops. Your laptop sounds like a jet engine.
+          Interval never gets cleared. RAF never stops. Your laptop is now a space heater that occasionally renders React components.
         </li>
       </ul>
 
       <IRLBox>
         <li>
-          Local: fans go brrr, VS Code freezes, CPU graph is just one red bar.
+          Local: fans sound like a jet taking off, VS Code freezes every 2 seconds, CPU graph looks like a heart attack.
         </li>
         <li>
-          Staging: pods at 90% CPU doing nothing, autoscaler adds more pods, CPU stays at 90%.
+          Staging: pods at 90% CPU doing absolutely fucking nothing, autoscaler panics and spawns 50 more pods, CPU still at 90%.
         </li>
         <li>
-          Prod: &quot;why is my phone hot&quot; tickets, you blame the browser, close the ticket.
+          Prod: users&apos; phones literally get hot enough to cook eggs, you blame &quot;browser optimization&quot; and close the ticket.
         </li>
       </IRLBox>
 
@@ -627,7 +661,7 @@ useEffect(() => {
         code={code}
         active={enabled}
         accent="#f97316"
-        label="the code that did this"
+        label="the code that turned your CPU into a space heater"
       />
     </Panel>
   );
@@ -687,8 +721,9 @@ useEffect(() => {
   return (
     <Panel
       title="Feedback Chain Recursor"
-      subtitle="Two effects updating each other forever because dependencies are hard"
+      subtitle="two effects in a toxic relationship where they keep triggering each other until your browser crashes"
       accent="#22c55e"
+      glitch={enabled && intensity > 0.7}
     >
       <div
         style={{
@@ -701,15 +736,23 @@ useEffect(() => {
         }}
       >
         <div style={{ display: "flex", gap: 16 }}>
-          <div>
+          <div
+            style={{
+              animation: enabled && intensity > 0.7 ? "textCorruption 2s ease-in-out infinite" : "none",
+            }}
+          >
             head: <strong>{head}</strong>
           </div>
-          <div>
+          <div
+            style={{
+              animation: enabled && intensity > 0.7 ? "textCorruption 2s ease-in-out infinite 0.1s" : "none",
+            }}
+          >
             tail: <strong>{tail}</strong>
           </div>
         </div>
         <MetricPill
-          label="render hell"
+          label="render apocalypse"
           value={`${Math.round(intensity * 100)}%`}
           tone={intensity > 0.7 ? "hot" : intensity > 0.3 ? "warm" : "cool"}
         />
@@ -821,7 +864,7 @@ useEffect(() => {
       >
         {history.length === 0 && (
           <div style={{ opacity: 0.7 }}>
-            flip the toggle to watch two effects ping pong state updates until your browser gives up
+            flip the toggle to watch two effects have a mental breakdown and trigger each other until your browser commits suicide
           </div>
         )}
         {history.map((line, idx) => (
@@ -833,13 +876,13 @@ useEffect(() => {
 
       <IRLBox>
         <li>
-          Local: type one character, whole app re-renders 50 times, React DevTools just flashes.
+          Local: type one fucking character, whole app re-renders 50 times, React DevTools looks like a strobe light.
         </li>
         <li>
-          Staging: hover over anything, render storm happens, you blame React 18.
+          Staging: hover over literally anything, render apocalypse happens, you blame React 18 and close the issue.
         </li>
         <li>
-          Prod: &quot;feels slow&quot; bugs that only happen when real users use it, can&apos;t reproduce.
+          Prod: &quot;feels slow&quot; bugs that only happen when real users use it, you can&apos;t reproduce it, users think you&apos;re gaslighting them.
         </li>
       </IRLBox>
 
@@ -847,17 +890,17 @@ useEffect(() => {
         code={code}
         active={enabled}
         accent="#22c55e"
-        label="the infinite loop"
+        label="the code that makes React cry"
       />
     </Panel>
   );
 }
 
 
-/* 3. PHANTOM LISTENER MESH
+/* 3. MEMORY LEAK LISTENER MESH
    Mousemove listeners as a lifestyle choice.
 */
-function PhantomListenerMesh({ enabled }) {
+function MemoryLeakListenerMesh({ enabled }) {
   const [moves, setMoves] = useState(0);
 
   useEffect(() => {
@@ -885,7 +928,7 @@ function PhantomListenerMesh({ enabled }) {
 
   const code = `const globalGhostListeners = [];
 
-function PhantomListenerMesh({ enabled }) {
+function MemoryLeakListenerMesh({ enabled }) {
   const [moves, setMoves] = useState(0);
 
   useEffect(() => {
@@ -909,9 +952,10 @@ function PhantomListenerMesh({ enabled }) {
 
   return (
     <Panel
-      title="Phantom Listener Mesh"
-      subtitle="Adds a new mousemove listener every render and never removes any of them"
+      title="Memory Leak Listener Mesh"
+      subtitle="memory leak simulator 2024 - every mouse move spawns a new listener that never dies"
       accent="#3b82f6"
+      glitch={enabled && density > 0.7}
     >
       <div
         style={{
@@ -925,15 +969,23 @@ function PhantomListenerMesh({ enabled }) {
         }}
       >
         <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
-          <div>
+          <div
+            style={{
+              animation: enabled && density > 0.7 ? "flicker 0.4s infinite" : "none",
+            }}
+          >
             moves seen: <strong>{moves}</strong>
           </div>
-          <div>
+          <div
+            style={{
+              animation: enabled && density > 0.7 ? "shake 0.2s infinite" : "none",
+            }}
+          >
             ghost listeners: <strong>{globalGhostListeners.length}</strong>
           </div>
         </div>
         <MetricPill
-          label="listener pile"
+          label="memory hemorrhage"
           value={`${Math.round(density * 100)}%`}
           tone={density > 0.7 ? "hot" : density > 0.3 ? "warm" : "cool"}
         />
@@ -979,25 +1031,25 @@ function PhantomListenerMesh({ enabled }) {
             padding: "0 8px",
           }}
         >
-          Move your mouse. Each listener is a future &quot;it gets slow after a few minutes&quot; bug report.
+          Move your mouse. Each listener is a future &quot;my browser crashed&quot; bug report that you&apos;ll never fix.
         </div>
       </div>
 
       <ul style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
-        <li>Effect depends on <code>moves</code>, so it runs every time you move the mouse.</li>
-        <li>Each run adds another mousemove listener to the document.</li>
-        <li>Cleanup function is wrong, so listeners never get removed. Memory leak city.</li>
+        <li>Effect depends on <code>moves</code>, so it runs every single time you move the mouse. Every. Single. Time.</li>
+        <li>Each run adds another mousemove listener to the document. They pile up like garbage in a landfill.</li>
+        <li>Cleanup function is completely fucking wrong, so listeners never get removed. Memory leak apocalypse.</li>
       </ul>
 
       <IRLBox>
         <li>
-          Local: move mouse, console explodes, can&apos;t see your actual logs anymore.
+          Local: move mouse, console explodes with 1000 logs per second, can&apos;t see your actual logs, you give up debugging.
         </li>
         <li>
-          Staging: navigate around, memory climbs, no idea why, blame Next.js.
+          Staging: navigate around, memory climbs to 2GB for no reason, you have no idea why, blame Next.js and move on.
         </li>
         <li>
-          Prod: old phones lag after 2 minutes, users close the app, you never find out why.
+          Prod: old phones lag after 2 minutes, users close the app, you never find out why, ticket gets closed as &quot;device too old&quot;.
         </li>
       </IRLBox>
 
@@ -1005,7 +1057,7 @@ function PhantomListenerMesh({ enabled }) {
         code={code}
         active={enabled}
         accent="#3b82f6"
-        label="the broken cleanup"
+        label="the code that leaks memory like a sieve"
       />
     </Panel>
   );
@@ -1061,8 +1113,9 @@ useEffect(() => {
   return (
     <Panel
       title="Fetch DDOS Cannon"
-      subtitle="Every response triggers another request forever because you put responses in the dependency array"
+      subtitle="you accidentally built a DDoS attack against your own API because you&apos;re an idiot"
       accent="#ef4444"
+      glitch={enabled && floodLevel > 0.7}
     >
       <div
         style={{
@@ -1076,18 +1129,31 @@ useEffect(() => {
         }}
       >
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-          <div>
+          <div
+            style={{
+              animation: enabled && floodLevel > 0.7 ? "textCorruption 1.5s ease-in-out infinite" : "none",
+            }}
+          >
             requests: <strong>{requests}</strong>
           </div>
-          <div>
+          <div
+            style={{
+              animation: enabled && floodLevel > 0.7 ? "flicker 0.3s infinite" : "none",
+            }}
+          >
             responses: <strong>{responses}</strong>
           </div>
-          <div>
+          <div
+            style={{
+              animation: enabled && errors > 10 ? "shake 0.1s infinite" : "none",
+              color: errors > 10 ? "#ef4444" : "#e5e7eb",
+            }}
+          >
             errors: <strong>{errors}</strong>
           </div>
         </div>
         <MetricPill
-          label="request spam"
+          label="API abuse"
           value={`${Math.round(floodLevel * 100)}%`}
           tone={floodLevel > 0.7 ? "hot" : floodLevel > 0.3 ? "warm" : "cool"}
         />
@@ -1138,18 +1204,18 @@ useEffect(() => {
       </div>
 
       <p style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
-        Network tab is just a wall of identical requests. Backend graphs go vertical. You blame infrastructure.
+        Network tab is just a wall of identical requests. Backend graphs go vertical. You blame infrastructure and go home early.
       </p>
 
       <IRLBox>
         <li>
-          Local: network tab is just 500 identical requests, can&apos;t find the one you need.
+          Local: network tab is just 500 identical requests, can&apos;t find the one you need, you give up and use Postman.
         </li>
         <li>
-          Staging: SRE asks why one page load = 200 API calls. You say &quot;must be caching&quot;.
+          Staging: SRE asks why one page load = 200 API calls. You say &quot;must be caching&quot; and hope they don&apos;t check.
         </li>
         <li>
-          Prod: rate limits hit, errors spike, PM says backend is broken, you close DevTools.
+          Prod: rate limits hit, errors spike, PM says backend is broken, you close DevTools and pretend you didn&apos;t see it.
         </li>
       </IRLBox>
 
@@ -1157,16 +1223,16 @@ useEffect(() => {
         code={code}
         active={enabled}
         accent="#ef4444"
-        label="the infinite fetch loop"
+        label="the code that DDoSes your own API"
       />
     </Panel>
   );
 }
 
-/* 5. PHANTOM GRID ENGINE
+/* 5. WIDGET PYRAMID SCHEME
    Children that ping the parent with setState because of course they do.
 */
-function PhantomCell({ id, refreshMs, onTick, onPanic, enabled }) {
+function WidgetCell({ id, refreshMs, onTick, onPanic, enabled }) {
   const [hits, setHits] = useState(0);
 
   useEffect(() => {
@@ -1184,7 +1250,7 @@ function PhantomCell({ id, refreshMs, onTick, onPanic, enabled }) {
     }, refreshMs);
 
     // every run leaves another footprint
-    globalPhantomRefs.push({ id, intervalId });
+    globalPhantomRefs.push({ id, intervalId, timestamp: Date.now() });
 
     return () => {
       clearInterval(intervalId);
@@ -1219,19 +1285,19 @@ function PhantomCell({ id, refreshMs, onTick, onPanic, enabled }) {
   );
 }
 
-function PhantomGridEngine({ enabled }) {
+function WidgetPyramidScheme({ enabled }) {
   const [widgetCount, setWidgetCount] = useState(3);
   const [refreshMs, setRefreshMs] = useState(700);
   const [totalHits, setTotalHits] = useState(0);
 
-  function handleTick() {
+  const handleTick = useCallback(() => {
     setTotalHits(h => h + 1);
-  }
+  }, []);
 
-  function handlePanic() {
+  const handlePanic = useCallback(() => {
     // widgets ask the parent to add more widgets, because of course they do
     setWidgetCount(c => (c < 20 ? c + 1 : c));
-  }
+  }, []);
 
   const cells = enabled ? widgetCount : 0;
   const ids = Array.from({ length: cells }).map((_, i) => i);
@@ -1256,16 +1322,17 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
     globalPhantomRefs.push({ id, intervalId });
 
     return () => clearInterval(intervalId);
-  }, [id, refreshMs, onTick, onPanic, hits]);
+  }, [id, refreshMs, onTick, onPanic, hits]); // hits in deps = effect recreates every tick
 
   return <div className="widget" />;
 }`;
 
   return (
     <Panel
-      title="Phantom Grid Engine"
-      subtitle="Every widget has its own interval, effects depend on local state, and widgets spawn more widgets"
+      title="Widget Pyramid Scheme"
+      subtitle="widgets spawn widgets spawn widgets spawn widgets until your browser gives up and dies"
       accent="#a855f7"
+      glitch={enabled && widgetCount > 10}
     >
       <div
         style={{
@@ -1279,13 +1346,25 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
         }}
       >
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-          <div>
+          <div
+            style={{
+              animation: enabled && widgetCount > 10 ? "textCorruption 2s ease-in-out infinite" : "none",
+            }}
+          >
             widgets: <strong>{widgetCount}</strong>
           </div>
-          <div>
+          <div
+            style={{
+              animation: enabled && totalHits > 100 ? "flicker 0.2s infinite" : "none",
+            }}
+          >
             total ticks: <strong>{totalHits}</strong>
           </div>
-          <div>
+          <div
+            style={{
+              animation: enabled && globalPhantomRefs.length > 20 ? "shake 0.15s infinite" : "none",
+            }}
+          >
             interval footprints: <strong>{globalPhantomRefs.length}</strong>
           </div>
         </div>
@@ -1337,7 +1416,7 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
           }}
         >
           {ids.map(id => (
-            <PhantomCell
+            <WidgetCell
               key={id}
               id={id}
               refreshMs={refreshMs}
@@ -1351,25 +1430,25 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
 
       <ul style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
         <li>
-          Each widget creates its own interval instead of one shared timer.
+          Each widget creates its own interval instead of one shared timer. It&apos;s like having 20 separate timers all doing the same thing, except they&apos;re all slightly out of sync and your CPU hates you.
         </li>
         <li>
-          Effect depends on <code>hits</code>, so it recreates every tick, but the global array keeps growing.
+          Effect depends on <code>hits</code>, so it recreates every single tick. The cleanup runs, but then the effect runs again immediately because <code>hits</code> changed. The global array keeps growing forever like a tumor.
         </li>
         <li>
-          Widgets call <code>onPanic()</code> to spawn more widgets, which spawn more intervals, which spawn more widgets.
+          Widgets call <code>onPanic()</code> to spawn more widgets, which spawn more intervals, which spawn more widgets. It&apos;s a fucking pyramid scheme where the product is CPU usage and everyone loses.
         </li>
       </ul>
 
       <IRLBox>
         <li>
-          Local: dashboard feels slow, leave it open, come back, CPU at 100%.
+          Local: dashboard feels slow, leave it open for lunch, come back, CPU at 100%, laptop sounds like a jet engine.
         </li>
         <li>
-          Staging: 20 widgets = 20 identical API calls every second, backend graphs look weird.
+          Staging: 20 widgets = 20 identical API calls every second, backend graphs look like a fucking heart attack.
         </li>
         <li>
-          Prod: analytics page open for 10 minutes, phone gets hot, browser kills the tab.
+          Prod: analytics page open for 10 minutes, phone gets hot enough to cook eggs, browser kills the tab, user thinks your app is broken.
         </li>
       </IRLBox>
 
@@ -1377,7 +1456,7 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
         code={code}
         active={enabled}
         accent="#a855f7"
-        label="the widget explosion"
+        label="the code that runs a widget pyramid scheme"
       />
     </Panel>
   );
@@ -1449,10 +1528,11 @@ export default function Page() {
               letterSpacing: 0.15,
               fontSize: 25,
               textTransform: "lowercase",
-              animation: "headerGlitch 6s infinite",
+              animation: "headerGlitch 6s infinite, textCorruption 4s ease-in-out infinite",
+              transform: hasChaos ? "skew(0.5deg)" : "skew(0deg)",
             }}
           >
-            this is what happens when you use useEffect wrong
+            this is what happens when you use useEffect like a fucking moron
           </h1>
           <p
             style={{
@@ -1462,7 +1542,7 @@ export default function Page() {
               marginBottom: 10,
             }}
           >
-            These are real bugs I&apos;ve seen in production. Every time you think &quot;I&apos;ll just useEffect it&quot;, you&apos;re making one of these.
+            These are real bugs I&apos;ve seen in production. Every time you think &quot;I&apos;ll just useEffect it&quot;, you&apos;re making one of these. Stop it. You&apos;re killing your app.
           </p>
 
           {/* default state clarity banner */}
@@ -1498,7 +1578,7 @@ export default function Page() {
                 background: "rgba(0,0,0,0.35)",
               }}
             >
-              {hasChaos ? "you did this" : "safe mode - nothing broken yet"}
+              {hasChaos ? "you broke it, you monster" : "safe mode - nothing broken yet"}
             </span>
 
             {!hasChaos && (
@@ -1509,7 +1589,7 @@ export default function Page() {
 
             {hasChaos && (
               <span style={{ fontSize: 12, opacity: 0.95 }}>
-                You turned something on. Now your app is broken and it&apos;s your fault.
+                You turned something on. Now your app is broken, your CPU is screaming, and it&apos;s 100% your fault. Congratulations.
               </span>
             )}
           </div>
@@ -1570,17 +1650,22 @@ export default function Page() {
                 }}
               />
             </div>
-            <span style={{ opacity: 0.9 }}>
+            <span 
+              style={{ 
+                opacity: 0.9,
+                animation: chaos > 8 ? "flicker 0.5s infinite" : "none",
+              }}
+            >
               {chaos === 0 &&
-                "Stage 0: nothing running, everything is fine."}
+                "Stage 0: nothing running, everything is fine, your computer is happy."}
               {chaos > 0 &&
                 chaos <= 4 &&
-                "Stage 1: minor jank, CPU bumps, you probably won't notice."}
+                "Stage 1: minor jank, CPU bumps, you probably won&apos;t notice until it&apos;s too late."}
               {chaos > 4 &&
                 chaos <= 8 &&
-                "Stage 2: noticeable lag, perf charts look bad, users complain."}
+                "Stage 2: noticeable lag, perf charts look like a heart attack, users complain, you blame React."}
               {chaos > 8 &&
-                "Stage 3: everything is broken, fans spinning, oncall is paged."}
+                "Stage 3: everything is broken, fans spinning like jet engines, oncall is paged, you&apos;re fired."}
             </span>
             <span
               style={{
@@ -1647,8 +1732,8 @@ export default function Page() {
           }}
         >
           <IssueToggle
-            label="Brain Static Loop"
-            description="interval + RAF + random deps = CPU goes brrr"
+            label="CPU Spinner Loop"
+            description="interval + RAF + random deps = your CPU commits suicide"
             active={brainOn}
             onChange={setBrainOn}
             accent="#f97316"
@@ -1656,15 +1741,15 @@ export default function Page() {
           />
           <IssueToggle
             label="Feedback Chain Recursor"
-            description="two effects updating each other = infinite renders"
+            description="two effects in a toxic relationship = infinite renders"
             active={loopOn}
             onChange={setLoopOn}
             accent="#22c55e"
             hint="render loop"
           />
           <IssueToggle
-            label="Phantom Listener Mesh"
-            description="mousemove listeners that pile up forever"
+            label="Memory Leak Listener Mesh"
+            description="mousemove listeners that leak memory like a sieve"
             active={meshOn}
             onChange={setMeshOn}
             accent="#3b82f6"
@@ -1672,15 +1757,15 @@ export default function Page() {
           />
           <IssueToggle
             label="Fetch DDOS Cannon"
-            description="fetch response triggers another fetch forever"
+            description="you accidentally DDoS your own API because you&apos;re an idiot"
             active={ddosOn}
             onChange={setDdosOn}
             accent="#ef4444"
             hint="network"
           />
           <IssueToggle
-            label="Phantom Grid Engine"
-            description="widgets spawn more widgets, intervals spawn more intervals"
+            label="Widget Pyramid Scheme"
+            description="widgets spawn widgets like cancer, intervals spawn intervals like cancer"
             active={gridOn}
             onChange={setGridOn}
             accent="#a855f7"
@@ -1695,11 +1780,11 @@ export default function Page() {
             gap: 16,
           }}
         >
-          {brainOn && <BrainStaticLoop enabled={brainOn} />}
+          {brainOn && <CpuSpinnerLoop enabled={brainOn} />}
           {loopOn && <FeedbackChainRecursor enabled={loopOn} />}
-          {meshOn && <PhantomListenerMesh enabled={meshOn} />}
+          {meshOn && <MemoryLeakListenerMesh enabled={meshOn} />}
           {ddosOn && <FetchDdosCannon enabled={ddosOn} />}
-          <PhantomGridEngine enabled={gridOn} />
+          <WidgetPyramidScheme enabled={gridOn} />
         </section>
 
         <p
@@ -1710,7 +1795,7 @@ export default function Page() {
             color: "#9ca3af",
           }}
         >
-          Fix these. Rewrite them properly. Stop using useEffect for everything. Your CPU will thank you.
+          Fix these. Rewrite them properly. Stop using useEffect for everything. Your CPU will thank you. Your users will thank you. Your oncall will thank you. Just fucking fix them.
         </p>
       </div>
     </main>
