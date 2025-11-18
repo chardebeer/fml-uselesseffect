@@ -1382,9 +1382,11 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
             alignItems: "center",
             gap: 8,
             fontSize: 11,
+            whiteSpace: "nowrap",
+            flexShrink: 0,
           }}
         >
-          refresh period (ms)
+          <span>refresh (ms)</span>
           <input
             type="range"
             min="200"
@@ -1392,11 +1394,13 @@ function Widget({ id, refreshMs, onTick, onPanic }) {
             step="100"
             value={refreshMs}
             onChange={e => setRefreshMs(Number(e.target.value))}
+            style={{ width: 100 }}
           />
           <span
             style={{
               fontVariantNumeric: "tabular-nums",
               opacity: 0.9,
+              minWidth: 40,
             }}
           >
             {refreshMs}
@@ -1583,9 +1587,11 @@ export default function Page() {
                 letterSpacing: 0.1,
                 border: "1px solid rgba(15,23,42,0.4)",
                 background: "rgba(0,0,0,0.35)",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
               }}
             >
-              {hasChaos ? "the amount of time this actually runs for depends on how much RAM you can afford - you did this to yourself" : "nothing broken yet"}
+              {hasChaos ? "chaos mode - you did this" : "nothing broken yet"}
             </span>
 
             {!hasChaos && (
@@ -1618,7 +1624,7 @@ export default function Page() {
               boxShadow: "0 0 40px rgba(15,23,42,0.9)",
             }}
           >
-            <span style={{ opacity: 0.9 }}>corruption meter</span>
+            <span style={{ opacity: 0.9, whiteSpace: "nowrap", flexShrink: 0 }}>corruption meter</span>
             <div
               style={{
                 position: "relative",
@@ -1629,6 +1635,7 @@ export default function Page() {
                   "linear-gradient(90deg,#022c22,#020617,#111827,#020617)",
                 overflow: "hidden",
                 border: "1px solid #111827",
+                flexShrink: 0,
               }}
             >
               <div
@@ -1661,6 +1668,8 @@ export default function Page() {
               style={{ 
                 opacity: 0.9,
                 animation: chaos > 8 ? "flicker 0.5s infinite" : "none",
+                flex: "1 1 200px",
+                minWidth: 0,
               }}
             >
               {chaos === 0 &&
@@ -1676,12 +1685,13 @@ export default function Page() {
             </span>
             <span
               style={{
-                marginLeft: "auto",
                 opacity: 0.7,
                 fontSize: 11,
                 display: "flex",
                 alignItems: "center",
                 gap: 6,
+                whiteSpace: "nowrap",
+                flexShrink: 0,
               }}
             >
               <span
@@ -1806,88 +1816,88 @@ export default function Page() {
         </p>
 
 
-{/* CONSPIRACY SECTION */}
-<div
-  style={{
-    marginTop: 60,
-    padding: 24,
-    borderRadius: 16,
-    background:
-      "linear-gradient(135deg, rgba(127,29,29,0.95) 0%, rgba(69,10,10,0.98) 50%, rgba(127,29,29,0.95) 100%)",
-    border: "3px solid #ef4444",
-    boxShadow:
-      "0 0 40px rgba(239,68,68,0.6), inset 0 0 20px rgba(0,0,0,0.5)",
-    position: "relative",
-    overflow: "hidden",
-  }}
->
-  {/* Red scanlines overlay */}
-  <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      backgroundImage:
-        "repeating-linear-gradient(0deg, rgba(239,68,68,0.1) 0, rgba(239,68,68,0.1) 1px, transparent 1px, transparent 2px)",
-      pointerEvents: "none",
-      animation: "scanline 2s linear infinite",
-    }}
-  />
+        {/* CONSPIRACY SECTION */}
+        <div
+          style={{
+            marginTop: 60,
+            padding: 24,
+            borderRadius: 16,
+            background:
+              "linear-gradient(135deg, rgba(127,29,29,0.95) 0%, rgba(69,10,10,0.98) 50%, rgba(127,29,29,0.95) 100%)",
+            border: "3px solid #ef4444",
+            boxShadow:
+              "0 0 40px rgba(239,68,68,0.6), inset 0 0 20px rgba(0,0,0,0.5)",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* Red scanlines overlay */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage:
+                "repeating-linear-gradient(0deg, rgba(239,68,68,0.1) 0, rgba(239,68,68,0.1) 1px, transparent 1px, transparent 2px)",
+              pointerEvents: "none",
+              animation: "scanline 2s linear infinite",
+            }}
+          />
 
-  <div style={{ position: "relative", zIndex: 1 }}>
-    <div
-      style={{
-        textAlign: "center",
-        marginBottom: 20,
-        padding: "12px 0",
-        borderTop: "2px solid #ef4444",
-        borderBottom: "2px solid #ef4444",
-      }}
-    >
-      <h2
-        style={{
-          margin: 0,
-          fontSize: 28,
-          fontWeight: 900,
-          color: "#fef2f2",
-          textTransform: "uppercase",
-          letterSpacing: 3,
-          textShadow:
-            "0 0 20px rgba(239,68,68,0.8), 0 0 40px rgba(239,68,68,0.6), 2px 2px 0 #7f1d1d",
-          animation: "flicker 1s infinite",
-        }}
-      >
-        ⚠️ WAKE UP DEVELOPERS ⚠️
-      </h2>
-    </div>
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <div
+              style={{
+                textAlign: "center",
+                marginBottom: 20,
+                padding: "12px 0",
+                borderTop: "2px solid #ef4444",
+                borderBottom: "2px solid #ef4444",
+              }}
+            >
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: 28,
+                  fontWeight: 900,
+                  color: "#fef2f2",
+                  textTransform: "uppercase",
+                  letterSpacing: 3,
+                  textShadow:
+                    "0 0 20px rgba(239,68,68,0.8), 0 0 40px rgba(239,68,68,0.6), 2px 2px 0 #7f1d1d",
+                  animation: "flicker 1s infinite",
+                }}
+              >
+                ⚠️ WAKE UP DEVELOPERS ⚠️
+              </h2>
+            </div>
 
-    <div
-      style={{
-        fontSize: 14,
-        lineHeight: 1.8,
-        color: "#fef2f2",
-      }}
-    >
-      <p
-        style={{
-          margin: "16px 0",
-          fontSize: 18,
-          fontWeight: 700,
-          color: "#fca5a5",
-          textTransform: "uppercase",
-          textAlign: "center",
-        }}
-      >
-        THEY DON&apos;T WANT YOU TO KNOW THIS
-      </p>
+            <div
+              style={{
+                fontSize: 14,
+                lineHeight: 1.8,
+                color: "#fef2f2",
+              }}
+            >
+              <p
+                style={{
+                  margin: "16px 0",
+                  fontSize: 18,
+                  fontWeight: 700,
+                  color: "#fca5a5",
+                  textTransform: "uppercase",
+                  textAlign: "center",
+                }}
+              >
+                THEY DON&apos;T WANT YOU TO KNOW THIS
+              </p>
 
-      <p style={{ margin: "12px 0", fontSize: 15 }}>
-        <strong style={{ color: "#fca5a5", fontSize: 16 }}>
-          React doesn&apos;t want you to know the truth about useEffect.
-        </strong>{" "}
-        The &quot;documentation&quot; is a LIE. The &quot;best practices&quot; are
-        PROPAGANDA. Every time you use useEffect, you&apos;re playing into their
-        hands. The React team has a secret meeting every Tuesday where they laugh at your dependency arrays.
-      </p>
+              <p style={{ margin: "12px 0", fontSize: 15 }}>
+                <strong style={{ color: "#fca5a5", fontSize: 16 }}>
+                  React doesn&apos;t want you to know the truth about useEffect.
+                </strong>{" "}
+                The &quot;documentation&quot; is a LIE. The &quot;best practices&quot; are
+                PROPAGANDA. Every time you use useEffect, you&apos;re playing into their
+                hands. The React team has a secret meeting every Tuesday where they laugh at your dependency arrays.
+              </p>
 
       <p style={{ margin: "12px 0", fontSize: 15 }}>
         <strong style={{ color: "#fca5a5", fontSize: 16 }}>
@@ -2405,19 +2415,18 @@ export default function Page() {
           borderTop: "1px solid rgba(239,68,68,0.3)",
         }}
       >
-         <p style={{ margin: 0 }}>
-           🔴 LIVE: {new Date().toLocaleString()} | DEVELOPERS AWAKENED:{" "}
-           {Math.floor(Math.random() * 10000) + 1000} | STATUS: THEY KNOW
-         </p>
+          <p style={{ margin: 0 }}>
+            🔴 LIVE: {new Date().toLocaleString()} | DEVELOPERS AWAKENED:{" "}
+            {Math.floor(Date.now() % 10000) + 1000} | STATUS: THEY KNOW
+          </p>
          <p style={{ margin: "8px 0 0 0", fontSize: 9, opacity: 0.5 }}>
            ⚠️ TRANSMISSION INTERCEPTED ⚠️ | REACT TEAM RESPONSE: &quot;WE SEE YOU&quot; | 
            YOUR IP HAS BEEN LOGGED | EXPECT A VISIT | DO NOT RESIST
          </p>
-       </div>
-    </div>
-  </div>
-</div>
-
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );
