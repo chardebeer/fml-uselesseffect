@@ -411,6 +411,30 @@ function IssueToggle({ label, description, active, onChange, accent, hint }) {
   );
 }
 
+// Shared IRL box
+function IRLBox({ children }) {
+  return (
+    <div
+      style={{
+        marginTop: 8,
+        padding: 8,
+        borderRadius: 8,
+        background: "rgba(15,23,42,0.95)",
+        border: "1px dashed #374151",
+        fontSize: 10,
+        color: "#e5e7eb",
+      }}
+    >
+      <div style={{ fontWeight: 500, fontSize: 10, marginBottom: 3 }}>
+        IRL symptoms
+      </div>
+      <ul style={{ margin: 0, paddingLeft: 16, listStyle: "disc" }}>
+        {children}
+      </ul>
+    </div>
+  );
+}
+
 // ------- cursed panels -------
 
 /* 1. BRAIN STATIC LOOP
@@ -486,7 +510,7 @@ useEffect(() => {
   return (
     <Panel
       title="Brain Static Loop"
-      subtitle="Dear useEffect, why are you allowed to schedule both an interval and a RAF in the same breath."
+      subtitle="The effect that treats your CPU like a glow stick at a rave."
       accent="#f97316"
     >
       <div
@@ -589,6 +613,20 @@ useEffect(() => {
         </li>
       </ul>
 
+      <IRLBox>
+        <li>
+          Local dev: fans spin, VS Code lag, CPU flamegraph is a single bar labeled
+          "you".
+        </li>
+        <li>
+          Staging: pods hit 90 percent CPU at idle, autoscaler quietly panics.
+        </li>
+        <li>
+          Prod: users report "website makes my phone hot" and you pretend it is a
+          them problem.
+        </li>
+      </IRLBox>
+
       <CodeSnippet
         code={code}
         active={enabled}
@@ -600,7 +638,7 @@ useEffect(() => {
 }
 
 /* 2. FEEDBACK CHAIN RECURSOR
-   Two effects writing to each other, just like that one team that only talks in incidents.
+   Two effects writing to each other, like a pair of Slack bots having a meltdown.
 */
 function FeedbackChainRecursor({ enabled }) {
   const [head, setHead] = useState(0);
@@ -642,7 +680,7 @@ useEffect(() => {
   return (
     <Panel
       title="Feedback Chain Recursor"
-      subtitle="Dear useEffect, maybe state that depends on state that depends on state was a warning sign."
+      subtitle="Two effects, one bad idea, infinite renders."
       accent="#22c55e"
     >
       <div
@@ -706,6 +744,21 @@ useEffect(() => {
           React instead of the mirror.
         </li>
       </ul>
+
+      <IRLBox>
+        <li>
+          Local dev: typing in an input re-renders the whole tree 40 times, DevTools
+          highlight never stops.
+        </li>
+        <li>
+          Staging: CPU spikes when someone hovers a button because these states are
+          chained to layout.
+        </li>
+        <li>
+          Prod: "it is sometimes laggy" tickets that reproduce only when the boss is
+          watching.
+        </li>
+      </IRLBox>
 
       <CodeSnippet
         code={code}
@@ -773,7 +826,7 @@ function PhantomListenerMesh({ enabled }) {
   return (
     <Panel
       title="Phantom Listener Mesh"
-      subtitle="Dear useEffect, why is it legal to add listeners like this in 2025."
+      subtitle="Attaches listeners like a glitter bomb you can never vacuum up."
       accent="#3b82f6"
     >
       <div
@@ -842,8 +895,8 @@ function PhantomListenerMesh({ enabled }) {
             padding: "0 8px",
           }}
         >
-          move the cursor and imagine each ghost listener as a future bug report
-          that says useEffect is broken.
+          Move the cursor and imagine each ghost listener as a future bug report
+          that says "it only lags after a while".
         </div>
       </div>
 
@@ -852,6 +905,21 @@ function PhantomListenerMesh({ enabled }) {
         <li>Each run adds a new mousemove listener.</li>
         <li>Cleanup does nothing, which is a surprising metaphor for your tests.</li>
       </ul>
+
+      <IRLBox>
+        <li>
+          Local dev: moving the mouse makes console spam so loud you cannot see your
+          logs.
+        </li>
+        <li>
+          Staging: event listeners pile up on every navigation, memory use climbs for
+          no apparent reason.
+        </li>
+        <li>
+          Prod: older phones feel sticky, scroll jank appears after users move their
+          finger a bit too much.
+        </li>
+      </IRLBox>
 
       <CodeSnippet
         code={code}
@@ -864,7 +932,7 @@ function PhantomListenerMesh({ enabled }) {
 }
 
 /* 4. FETCH DDOS CANNON
-   If your staging keeps falling over, this panel is why.
+   The part of your app that thinks "got a response" means "send another".
 */
 function FetchDdosCannon({ enabled }) {
   const [requests, setRequests] = useState(0);
@@ -873,7 +941,7 @@ function FetchDdosCannon({ enabled }) {
 
   useEffect(() => {
     if (!enabled) return;
-    if (responses > 120) return; // mercy cap, barely
+    if (responses > 120) return;
 
     setRequests(r => r + 1);
 
@@ -913,7 +981,7 @@ useEffect(() => {
   return (
     <Panel
       title="Fetch DDOS Cannon"
-      subtitle="Dear useEffect, of course you keep scheduling more network traffic, why would you not."
+      subtitle="Congratulations, you turned a data fetch into a tiny distributed denial of service simulator."
       accent="#ef4444"
     >
       <div
@@ -990,10 +1058,25 @@ useEffect(() => {
       </div>
 
       <p style={{ marginTop: 8, fontSize: 11, color: "#9ca3af" }}>
-        Network tab is your crime scene now. This effect is exactly the pattern
-        that convinces people React is secretly a distributed denial of service
-        library.
+        Network tab is now a firehose because obviously the correct response to
+        "I got data" is "what if we did that again forever". Backend graphs go
+        vertical, you say "must be infra".
       </p>
+
+      <IRLBox>
+        <li>
+          Local dev: Network panel fills so fast you cannot find the request you
+          actually care about.
+        </li>
+        <li>
+          Staging: SRE pings you asking why a single page view is sending hundreds
+          of requests to one endpoint.
+        </li>
+        <li>
+          Prod: API rate limits kick in, error rates spike, product says "the
+          backend is flaky" and you quietly close DevTools.
+        </li>
+      </IRLBox>
 
       <CodeSnippet
         code={code}
@@ -1006,7 +1089,7 @@ useEffect(() => {
 }
 
 /* 5. PHANTOM GRID ENGINE
-   Children that ping the parent with setState because why not.
+   Children that ping the parent with setState because of course they do.
 */
 function PhantomCell({ id, onEcho }) {
   const [charge, setCharge] = useState(0);
@@ -1086,7 +1169,7 @@ function PhantomCell({ id, onEcho }) {
   return (
     <Panel
       title="Phantom Grid Engine"
-      subtitle="Dear useEffect, thanks for teaching us that children can resize their own parent component."
+      subtitle="Every child has an interval and an opinion about how big the parent should be."
       accent="#a855f7"
     >
       <div
@@ -1164,6 +1247,21 @@ function PhantomCell({ id, onEcho }) {
           of sheer spite.
         </li>
       </ul>
+
+      <IRLBox>
+        <li>
+          Local dev: component tree in React DevTools is a sea of tiny rectangles
+          and the app is suddenly "a bit heavy".
+        </li>
+        <li>
+          Staging: memory graphs slope upward over time, nobody is sure why, you
+          blame "Node being weird".
+        </li>
+        <li>
+          Prod: long lived sessions slowly turn into space heaters, mobile browsers
+          quietly kill the tab.
+        </li>
+      </IRLBox>
 
       <CodeSnippet
         code={code}
@@ -1244,7 +1342,7 @@ export default function Page() {
               animation: "headerGlitch 6s infinite",
             }}
           >
-            dear useEffect, we need to talk
+            this is not a demo, it is evidence
           </h1>
           <p
             style={{
@@ -1254,9 +1352,9 @@ export default function Page() {
               marginBottom: 10,
             }}
           >
-            This lab is not a tutorial. It is a collection of side effect crimes.
-            Every panel is something we once shipped, looked at in the profiler,
-            and blamed on React instead of our own choices.
+            These panels are not theoretical. They are the spiritual descendants of
+            real bugs. Every time you think "just throw it in a useEffect", one of
+            these little rooms gets a new roommate.
           </p>
 
           {/* default state clarity banner */}
@@ -1305,14 +1403,13 @@ export default function Page() {
 
             {hasChaos && (
               <span style={{ fontSize: 12, opacity: 0.95 }}>
-                You chose to turn something on. Every error in the console from
-                this point forward is a love letter from useEffect addressed
-                directly to you.
+                You flipped something. From this point on, every lag spike and every
+                angry log line is user error and the user is you.
               </span>
             )}
           </div>
 
-          {/* corruption meter */}
+          {/* corruption meter with real world labels */}
           <div
             style={{
               marginTop: 4,
@@ -1369,10 +1466,16 @@ export default function Page() {
               />
             </div>
             <span style={{ opacity: 0.9 }}>
-              {chaos === 0 && "no effects are currently running"}
-              {chaos > 0 && chaos <= 4 && "background hiss - ignorable until it is not"}
-              {chaos > 4 && chaos <= 8 && "noticeable screaming - profiler recommended"}
-              {chaos > 8 && "full spectral meltdown - please open Task Manager"}
+              {chaos === 0 &&
+                "Stage 0: no effects running, battery and fans are still friends."}
+              {chaos > 0 &&
+                chaos <= 4 &&
+                "Stage 1: background hiss - tiny jank, small CPU bumps, you shrug."}
+              {chaos > 4 &&
+                chaos <= 8 &&
+                "Stage 2: noticeable screaming - perf charts get weird, users say 'kinda slow'."}
+              {chaos > 8 &&
+                "Stage 3: spectral meltdown - fans spin, APIs sweat, oncall opens your repo."}
             </span>
             <span
               style={{
@@ -1400,7 +1503,7 @@ export default function Page() {
             </span>
           </div>
 
-          {/* tiny hydration note - pointed at useEffect habits, not React */}
+          {/* hydration note */}
           <div
             style={{
               fontSize: 10,
@@ -1426,8 +1529,8 @@ export default function Page() {
             <span>
               The background orbs used to call <code>Math.random()</code> in
               render and React complained. Now they use a deterministic pseudo
-              random function. The problem was never React. It was us and our
-              affection for side effects.
+              random function. Hydration mismatch was not a React problem, it was
+              a side effect problem. Again.
             </span>
           </div>
         </header>
@@ -1443,7 +1546,7 @@ export default function Page() {
         >
           <IssueToggle
             label="Brain Static Loop"
-            description="interval plus RAF plus random deps - a spa day for your fans"
+            description="interval plus RAF plus random deps - free central heating"
             active={brainOn}
             onChange={setBrainOn}
             accent="#f97316"
@@ -1467,7 +1570,7 @@ export default function Page() {
           />
           <IssueToggle
             label="Fetch DDOS Cannon"
-            description="staging server as a personality test"
+            description="turns 'fetch once' into 'what if we never stopped'"
             active={ddosOn}
             onChange={setDdosOn}
             accent="#ef4444"
@@ -1494,7 +1597,6 @@ export default function Page() {
           {loopOn && <FeedbackChainRecursor enabled={loopOn} />}
           {meshOn && <PhantomListenerMesh enabled={meshOn} />}
           {ddosOn && <FetchDdosCannon enabled={ddosOn} />}
-          {/* grid panel always renders, but can be asleep */}
           <PhantomGridEngine enabled={gridOn} />
         </section>
 
@@ -1506,9 +1608,10 @@ export default function Page() {
             color: "#9ca3af",
           }}
         >
-          The real workshop exercise: keep the visuals, delete every useEffect,
-          rewrite all of this with sane data flow, and see how much quieter your
-          laptop becomes. Then send an apology letter to your profiler.
+          Actual homework: keep the vibes, delete the effects. Rewrite every panel
+          with proper data flow, then compare your CPU usage. The hate letter was
+          never for React. It was for the part of us that keeps reaching for
+          useEffect like duct tape.
         </p>
       </div>
     </main>
